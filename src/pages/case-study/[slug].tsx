@@ -141,7 +141,7 @@ const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: stri
   const normalizedSrc = normalizeImageUrl(src);
 
   return (
-    <figure className="w-full aspect-[16/9] sm:aspect-[3/2] md:aspect-[16/9] relative my-8 rounded-md border border-gray-300">
+    <figure className="w-full aspect-[16/9] sm:aspect-[3/2] md:aspect-[16/9] relative rounded-md border border-gray-300">
       <Image 
         src={normalizedSrc}
         alt={alt || 'Case study image'}
@@ -170,7 +170,7 @@ const MarkdownComponents = {
   )),
 
   p: memo((props: BaseProps) => (
-    <div className="my-4 text-gray-700 leading-relaxed" {...props} />
+    <div className="text-gray-700 leading-relaxed" {...props} />
   )),
 
 
