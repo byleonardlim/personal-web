@@ -3,7 +3,7 @@ title: "Quick-Draw Reporting: From Raw Data to Readable in Record Time"
 description: "Dive into Allison's journey from report-writing drudgery to deadline-crushing confidence, as smart tools transform her insights into client-ready gold."
 ---
 
-![Test Image](/assets/images/case-studies/project-1/test-image.png)
+![Test Image](https://sdmntprwestus2.oaiusercontent.com/files/00000000-1938-51f8-a932-9c9af7db9d68/raw?se=2025-03-29T09%3A54%3A55Z&sp=r&sv=2024-08-04&sr=b&scid=c84f479b-f855-57fe-90ae-a6b8d0123856&skoid=dfdaf859-26f6-4fed-affc-1befb5ac1ac2&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-03-29T07%3A38%3A24Z&ske=2025-03-30T07%3A38%3A24Z&sks=b&skv=2024-08-04&sig=uTFb/ropn8dIBz%2BNyafJRP1FhGrf6AsdHHA1ptr39A0%3D)
 
 ## Notes
 The Allison in this story is fictional, but her challenges are real. As an independent contributor AI Experience Designer in the product team, I've designed the solution using generative technology that transforms how auditors compile reports — from days to minutes.
@@ -18,7 +18,7 @@ This isn't just Allison's problem. Across audit firms, professionals drown in in
 ## Fast and Factually Correct
 "The ask is simple — we need a way to trace findings back to their original source," says Allison. Client questions and partner reviews demand instant evidence to back up every claim.
 
-![Test Image](/assets/images/case-studies/project-1/test-image.png)
+![Test Image](/public/assets/images/case-studies/quick-draw-reporting/test-image.png/)
 
 When engagements grow complex, team members must become reference librarians on the fly, pulling precise citations from a digital labyrinth of documents. For each finding, Allison needs to recall exactly which file, which page, which paragraph contains the supporting evidence.
 
@@ -37,7 +37,8 @@ Here's how it works for Allison:
 
 The Microsoft Word plug-in features a clean sidebar showing color-coded evidence cards that Allison can quickly review without breaking her workflow. The add-in integrates seamlessly with her familiar tools, no switching between applications or learning complex new systems.
 
-![Test Image](/assets/images/case-studies/project-1/test-image.png)
+![Test Image](/public/assets/images/case-studies/quick-draw-reporting/test-image.png/)
+
 > "I used to spend entire afternoons just gathering material for a single section, now I complete full first drafts before lunch, with available issues properly backed and traceable." — Allison.
 
 The impact has been substantial and measurable:

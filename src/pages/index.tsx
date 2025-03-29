@@ -29,7 +29,7 @@ const ParentComponent = ({ caseStudies }) => {
 
   return (
       <section id="case-studies">
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                   {caseStudies.map((study, index) => (
                       <CaseStudyCard 
                           key={study.slug} 
@@ -58,11 +58,11 @@ export default function Home({ caseStudies }: HomeProps) {
   return (
     <div ref={containerRef} className="relative">
       <main className="min-h-screen relative overflow-x-hidden">
-        {/* Static Gradient Background */}
+        {/* Static Gradient Background - Cold Steel Blue to Off-White */}
         <div
           className="fixed inset-0 w-full h-full -z-10"
           style={{
-            background: 'linear-gradient(to bottom right, #f0f9ff, #e0f2fe, #bae6fd)'
+            background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
           }}
         />
         
@@ -83,8 +83,8 @@ export default function Home({ caseStudies }: HomeProps) {
           </motion.section>
 
           {/* Case Studies Section */}
-          <section id="case-studies" ref={caseStudiesRef} className="py-32 max-w-4xl mx-auto">
-            <span className="px-4 py-2 mb-8 w-fit border border-current block uppercase text-xs font-bold">Featured Work</span>
+          <section id="case-studies" ref={caseStudiesRef} className="p-8 py-32 max-w-4xl mx-auto">
+            <span className="px-4 py-2 mb-4 w-fit border border-current block uppercase text-xs font-bold">Featured Work</span>
             <ParentComponent caseStudies={caseStudies} /> 
           </section>
 

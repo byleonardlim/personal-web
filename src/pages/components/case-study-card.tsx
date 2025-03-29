@@ -32,8 +32,8 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
     }, [onExpand]);
 
     const cardClassName = useMemo(() => {
-        return `p-4 lg:p-8 bg-white/30 backdrop-blur-sm rounded-lg cursor-pointer transition-all duration-300 ${
-            isExpanded ? 'bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 drop-shadow-2xl' : ''
+        return `p-4 lg:p-8 border border-current cursor-pointer transition-all duration-300 ${
+            isExpanded ? ' border-none bg-gradient-to-r from-purple-100 via-blue-70 to-pink-50 drop-shadow-2xl' : ''
         }`;
     }, [isExpanded]);
 

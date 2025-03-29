@@ -119,37 +119,28 @@ const StyledComponent = memo(({ className, children, ...props }: { className: st
   </div>
 ));
 
-// Simple image component without lightbox functionality
+// Simple image component
 const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: string; alt?: string; }) => {
-  // Clean and normalize image URLs
-  const normalizeImageUrl = useCallback((url: string) => {
-    if (!url) return '';
-    
-    // Remove any existing _next/image processing
-    const cleanUrl = url.replace(/\/_next\/image\?url=/, '');
-    
-    // Ensure URL is properly decoded
-    try {
-      return decodeURIComponent(cleanUrl);
-    } catch {
-      return cleanUrl;
-    }
-  }, []);
-
-  if (!src) return null;
-
-  const normalizedSrc = normalizeImageUrl(src);
-
+  // Check if the image is remote (starts with http:// or https://)
+  const isRemoteImage = src.startsWith('http://') || src.startsWith('https://');
+  
+  // For local images, clean the path
+  const imagePath = isRemoteImage ? src : src.replace(/^\/+/, '').replace(/^public\//, '');
+  
   return (
     <figure className="w-full aspect-[16/9] sm:aspect-[3/2] md:aspect-[16/9] relative rounded-md border border-gray-300">
       <Image 
-        src={normalizedSrc}
+        src={isRemoteImage ? imagePath : `/${imagePath}`}
         alt={alt || 'Case study image'}
         fill
         priority
         quality={90}
         className="rounded-lg object-contain transition-all duration-300"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+        onError={(e) => {
+          console.error('Image loading error:', e);
+        }}
+        unoptimized={isRemoteImage}
       />
     </figure>
   );
@@ -162,15 +153,15 @@ const MarkdownComponents = {
   img: MarkdownImage,
   
   h1: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h1 className="text-4xl font-bold mt-8 mb-4 leading-relaxed" {...props} />
+    <h1 className="text-4xl font-bold mt-8 mb-4 leading-relaxed bg-gradient-to-r from-blue-900 to-white bg-clip-text text-transparent" {...props} />
   )),
 
   h3: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed" {...props} />
+    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-blue-900 to-white bg-clip-text text-transparent" {...props} />
   )),
 
   p: memo((props: BaseProps) => (
-    <div className="text-gray-700 leading-relaxed" {...props} />
+    <div className="text-gray-600 leading-relaxed mb-4" {...props} />
   )),
 
 
@@ -188,7 +179,7 @@ const MarkdownComponents = {
       <motion.li 
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: false, margin: "-100px" }}
         transition={{ 
           duration: 0.4, 
           delay: hashCode * 0.1,
@@ -314,7 +305,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mb-8"
+            className="px-4 py-2 mb-8 w-fit border border-current block uppercase text-xs font-bold"
           >
             <Link 
               href="/"
@@ -324,10 +315,10 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
                 whileHover={{ x: -4 }}
                 className="flex items-center"
               >
-                <HomeIcon className="w-5 h-5 mr-2" />
-                <ArrowLeft className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* <HomeIcon className="w-5 h-5 mr-2" /> */}
+                <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
               </motion.div>
-              Back to Home
+              Back
             </Link>
           </motion.div>
 
@@ -337,7 +328,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
             transition={{ duration: 0.6 }}
           >
             <div className="mb-8 pb-4">
-              <h1 className="text-4xl font-bold text-gray-900 uppercase">{study.title}</h1>
+              <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 uppercase">{study.title}</h1>
             </div>
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
