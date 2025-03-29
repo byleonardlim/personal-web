@@ -54,7 +54,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
                     <div className="flex items-center">
                         <Link 
                             href={`/case-study/${study.slug}`}
-                            className="text-xl lg:text-3xl font-bold transition-colors">
+                            className="text-lg lg:text-xl font-bold transition-colors">
                             {study.title}
                             <ArrowUpRight className="ml-4 inline-block w-6 h-6" />
                         </Link>
