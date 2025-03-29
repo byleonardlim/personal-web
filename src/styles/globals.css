@@ -24,3 +24,28 @@ body {
   color: var(--foreground);
   font-family: 'JetBrains Mono Variable', monospace;
 }
+
+/* Background pattern for images */
+.bg-pattern-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Optional: Add a subtle animation to the patterns for a bit of life */
+@keyframes subtle-shift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 20px 20px;
+  }
+}
+
+/* Apply the animation - uncomment if you want this effect */
+.bg-pattern-grid {
+  animation: subtle-shift 60s linear infinite;
+}

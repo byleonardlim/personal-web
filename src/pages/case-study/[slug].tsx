@@ -119,29 +119,82 @@ const StyledComponent = memo(({ className, children, ...props }: { className: st
   </div>
 ));
 
-// Simple image component
+// Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: string; alt?: string; }) => {
-  // Check if the image is remote (starts with http:// or https://)
-  const isRemoteImage = src.startsWith('http://') || src.startsWith('https://');
-  
-  // For local images, clean the path
-  const imagePath = isRemoteImage ? src : src.replace(/^\/+/, '').replace(/^public\//, '');
-  
+  // Preprocess the URL immediately to avoid even attempting bad requests
+  const processImageSrc = (sourcePath: string): string => {
+    // Check if the image is remote (starts with http:// or https://)
+    const isRemoteImage = sourcePath.startsWith('http://') || sourcePath.startsWith('https://');
+    
+    if (isRemoteImage) {
+      return sourcePath;
+    }
+    
+    // Process local path
+    let processedPath = sourcePath;
+    
+    // Remove 'public/' from the beginning as Next.js serves from public as root
+    processedPath = processedPath.replace(/^\/public\//, '/').replace(/^public\//, '/');
+    
+    // Ensure the path starts with a slash
+    if (!processedPath.startsWith('/')) {
+      processedPath = '/' + processedPath;
+    }
+    
+    // Remove any trailing slashes that would cause 400 errors
+    processedPath = processedPath.replace(/\/+$/, '');
+    
+    // Check for test-image.png or other patterns that indicate placeholder content
+    const isTestImage = /test-image\.(png|jpg|jpeg|svg)/i.test(processedPath);
+    
+    return processedPath;
+  };
+
+  // Process the source immediately 
+  const initialSrc = processImageSrc(src);
+  const [imageSrc, setImageSrc] = useState<string>(initialSrc);
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Handle image load errors
+  const handleImageError = () => {
+    console.error('Image loading error for path:', imageSrc);
+    setImageError(true);
+  //  setImageSrc('/api/placeholder/800/450');
+  };
+
+  // Track when image successfully loads
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
   return (
-    <figure className="w-full aspect-[16/9] sm:aspect-[3/2] md:aspect-[16/9] relative rounded-md border border-gray-300">
-      <Image 
-        src={isRemoteImage ? imagePath : `/${imagePath}`}
-        alt={alt || 'Case study image'}
-        fill
-        priority
-        quality={90}
-        className="rounded-lg object-contain transition-all duration-300"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
-        onError={(e) => {
-          console.error('Image loading error:', e);
-        }}
-        unoptimized={isRemoteImage}
-      />
+    <figure className="w-full my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] p-4 md:p-6">      
+      {/* Image container */}
+      <div className="relative w-[95%] mx-auto z-10">
+        {imageError ? (
+          // Display a placeholder with error message when the image fails to load
+          <div className="bg-white rounded-md p-8 shadow-lg text-center min-h-[200px] flex flex-col items-center justify-center">
+            <div className="text-sm text-gray-500">
+              <div className="mb-2 font-medium">Image not available</div>
+              <div className="text-xs opacity-75">Original path: {src}</div>
+            </div>
+          </div>
+        ) : (
+          // Image with natural proportions
+          <div className="relative shadow-lg overflow-hidden rounded-md">
+            {/* Using a regular img element with next/image's unoptimized prop isn't ideal for responsive images */}
+            <img 
+              src={imageSrc}
+              alt={alt || 'Case study image'}
+              className="w-full h-auto rounded-md transition-all duration-300"
+              onError={handleImageError}
+              onLoad={handleImageLoad}
+              loading="lazy"
+            />
+          </div>
+        )}
+      </div>
     </figure>
   );
 });
@@ -299,7 +352,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
         variants={pageVariants}
         className="min-h-screen bg-white"
       >
-        <div className="max-w-6xl mx-auto px-8 py-20">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-20">
           {/* Back to Home Link */}
           <motion.div
             initial={{ opacity: 0 }}
