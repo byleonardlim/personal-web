@@ -214,7 +214,7 @@ const MarkdownComponents = {
   )),
 
   p: memo((props: BaseProps) => (
-    <div className="text-gray-600 leading-relaxed mb-4" {...props} />
+    <div className="text-gray-400 text-md leading-relaxed mb-4" {...props} />
   )),
 
 
@@ -241,7 +241,7 @@ const MarkdownComponents = {
         className="group"
       >
         <motion.div
-          className="p-4 bg-gray-50 border border-gray-200 rounded-lg transition-all duration-300"
+          className="p-4 border border-current transition-all duration-300"
         >
           <div className="flex items-start">
             <div className="flex-shrink-0 mr-3">
