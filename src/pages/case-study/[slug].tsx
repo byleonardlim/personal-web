@@ -205,12 +205,8 @@ MarkdownImage.displayName = 'MarkdownImage';
 const MarkdownComponents = {
   img: MarkdownImage,
   
-  h1: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h1 className="text-4xl font-bold mt-8 mb-4 leading-relaxed bg-gradient-to-r from-blue-900 to-white bg-clip-text text-transparent" {...props} />
-  )),
-
   h3: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-blue-900 to-white bg-clip-text text-transparent" {...props} />
+    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
   )),
 
   p: memo((props: BaseProps) => (
@@ -378,7 +374,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
             transition={{ duration: 0.6 }}
           >
             <div className="mb-8 pb-4">
-              <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 uppercase">{study.title}</h1>
+              <h1 className="text-3xl lg:text-5xl font-bold mt-8 mb-4 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-gray-500 bg-clip-text text-transparent">{study.title}</h1>
             </div>
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
