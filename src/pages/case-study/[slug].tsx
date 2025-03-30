@@ -95,8 +95,8 @@ const SectionedMarkdown = ({ content }) => {
       
       {/* Notes column (sticky) */}
       {notesSection && (
-        <div className="lg:w-1/3 order-first lg:order-last">
-          <div className="sticky top-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
+        <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
+          <div className="sticky lg:top-8 border border-gray-100 lg:rounded-lg p-6 bg-gray-50">
             <h2 className="text-lg font-bold mb-4 text-gray-700 uppercase">
               {notesSection.heading}
             </h2>
@@ -169,12 +169,12 @@ const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: stri
   };
 
   return (
-    <figure className="w-full my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] p-4 md:p-6">      
+    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] p-4 md:p-6">      
       {/* Image container */}
-      <div className="relative w-[95%] mx-auto z-10">
+      <div className="relative z-10">
         {imageError ? (
           // Display a placeholder with error message when the image fails to load
-          <div className="bg-white rounded-md p-8 shadow-lg text-center min-h-[200px] flex flex-col items-center justify-center">
+          <div className="bg-white rounded-md px-8 py-16 shadow-lg text-center min-h-[200px] flex flex-col items-center justify-center">
             <div className="text-sm text-gray-500">
               <div className="mb-2 font-medium">Image not available</div>
               <div className="text-xs opacity-75">Original path: {src}</div>
@@ -214,7 +214,7 @@ const MarkdownComponents = {
   )),
 
   p: memo((props: BaseProps) => (
-    <div className="text-gray-400 text-md leading-relaxed mb-4" {...props} />
+    <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
   )),
 
 
@@ -226,16 +226,14 @@ const MarkdownComponents = {
     const text = typeof props.children === 'string' 
       ? props.children 
       : JSON.stringify(props.children);
-    const hashCode = text.split('').reduce((h, c) => (h + c.charCodeAt(0)) % 5, 0);
     
     return (
       <motion.li 
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -200 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: false, margin: "-100px" }}
         transition={{ 
           duration: 0.4, 
-          delay: hashCode * 0.1,
           ease: [0.25, 0.1, 0.25, 1.0]
         }}
         className="group"
@@ -245,9 +243,9 @@ const MarkdownComponents = {
         >
           <div className="flex items-start">
             <div className="flex-shrink-0 mr-3">
-              <Asterisk className="w-6 h-6 text-black" />
+              <Asterisk className="w-4 h-4 text-gray-900" />
             </div>
-            <span className="text-gray-700">
+            <span className="text-sm">
               {props.children}
             </span>
           </div>
@@ -271,7 +269,7 @@ const MarkdownComponents = {
   )),
 
   blockquote: memo(React.forwardRef<HTMLQuoteElement, React.BlockquoteHTMLAttributes<HTMLQuoteElement>>((props, ref) => (
-    <blockquote ref={ref} className="bg-slate-50 border-l-4 border-gray-300 p-4 my-4 text-md font-bold" {...props} />
+    <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
   ))),
 
   table: memo((props: BaseProps) => (
@@ -368,7 +366,6 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
                 whileHover={{ x: -4 }}
                 className="flex items-center"
               >
-                {/* <HomeIcon className="w-5 h-5 mr-2" /> */}
                 <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
               </motion.div>
               Back
