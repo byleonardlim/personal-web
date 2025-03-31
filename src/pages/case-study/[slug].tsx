@@ -1,4 +1,5 @@
 /* eslint-disable react/display-name */
+/* eslint-disable react/no-unused-vars */
 import { motion, Variants, MotionProps } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
@@ -247,11 +248,11 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
           <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
             <div className="sticky lg:top-8 border border-gray-100 lg:rounded-lg p-6 bg-gray-50">
               <h2 className="text-lg font-bold mb-4 text-gray-700 uppercase">
-                {notesSection.heading}
+                {(notesSection as NotesSection).heading}
               </h2>
               <div className="text-sm text-gray-600 leading-relaxed">
                 <ReactMarkdown components={MarkdownComponents}>
-                  {notesSection.content}
+                  {(notesSection as NotesSection).content}
                 </ReactMarkdown>
               </div>
             </div>
