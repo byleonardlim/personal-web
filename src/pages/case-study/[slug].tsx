@@ -12,7 +12,11 @@ import React, { useState, useCallback, useEffect, memo } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 
-const SectionedMarkdown = ({ content }) => {
+interface SectionedMarkdownProps {
+  content: string;
+}
+
+const SectionedMarkdown = ({ content }: SectionedMarkdownProps) => {
   // Split content by h2 headings
   const sections = content.split(/(?=^## )/gm);
   
