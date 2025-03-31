@@ -147,7 +147,7 @@ MarkdownImage.displayName = 'MarkdownImage';
 interface BaseMarkdownProps {
   children?: React.ReactNode;
   className?: string;
-  [key: string]: any;
+  [key: string]: React.ReactNode | string | undefined;
 }
 
 const MarkdownComponents = {
