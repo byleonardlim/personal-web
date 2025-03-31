@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
@@ -107,7 +108,7 @@ const SectionedMarkdown = ({ content }) => {
 };
 
 // Enhanced image component with adaptive sizing based on image dimensions
-const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: string; alt?: string; }) => {
+const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
   return (
     <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
       {/* Image container with optimized Next.js Image */}
@@ -142,9 +143,9 @@ const MarkdownComponents = {
   )),
   
   li: memo((props) => {
-    const text = typeof props.children === 'string' 
-      ? props.children 
-      : JSON.stringify(props.children);
+//    const text = typeof props.children === 'string' 
+//      ? props.children 
+//      : JSON.stringify(props.children);
     
     return (
       <motion.li 

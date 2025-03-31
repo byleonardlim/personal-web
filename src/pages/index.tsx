@@ -9,7 +9,6 @@ import CaseStudyCard from './components/case-study-card';
 import { useState, useRef } from 'react';
 import "@fontsource-variable/jetbrains-mono";
 import SEO from './components/SEO';
-import { OptimizedImage } from './components/OptimizedImage';
 
 // Types
 interface CaseStudy {
@@ -54,7 +53,6 @@ export default function Home({ caseStudies }: HomeProps) {
   
   // Section refs
   const introRef = useRef<HTMLElement>(null);
-  const aboutRef = useRef<HTMLElement>(null);
   const caseStudiesRef = useRef<HTMLElement>(null);
 
   return (

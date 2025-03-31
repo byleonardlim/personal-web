@@ -5,8 +5,6 @@ interface FooterProps {
 }
 
 export default function Footer({ id }: FooterProps) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <motion.footer 
       id={id}
