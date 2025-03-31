@@ -12,6 +12,7 @@ import React, { useState, useCallback, useEffect, memo } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 import { NextApiResponse } from 'next';
+import { Components } from 'react-markdown';
 
 // Define interfaces for components
 interface SectionedMarkdownProps {
@@ -32,12 +33,6 @@ interface NotesSection {
   index: number;
 }
 
-interface BaseMarkdownProps {
-  children?: React.ReactNode;
-  className?: string;
-  [key: string]: React.ReactNode | string | undefined;
-}
-
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
   return (
@@ -54,26 +49,30 @@ const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
   );
 });
 
-// Set displayName for memoized component to help with debugging
-MarkdownImage.displayName = 'MarkdownImage';
-
-// Move MarkdownComponents outside the component scope to prevent re-renders
-const MarkdownComponents = {
-  img: MarkdownImage,
+// Create a proper react-markdown components object
+const MarkdownComponents: Components = {
+  img: ({ src, alt }) => 
+    src ? <MarkdownImage src={src} alt={alt} /> : null,
   
-  h3: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
-  )),
+  h3: ({ children }) => (
+    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent">
+      {children}
+    </h3>
+  ),
 
-  p: memo<BaseMarkdownProps>((props) => (
-    <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
-  )),
+  p: ({ children }) => (
+    <div className="text-gray-600 text-md leading-relaxed mb-4">
+      {children}
+    </div>
+  ),
 
-  ul: memo<BaseMarkdownProps>((props) => (
-    <ul className="my-8 space-y-4 list-none" {...props} />
-  )),
+  ul: ({ children }) => (
+    <ul className="my-8 space-y-4 list-none">
+      {children}
+    </ul>
+  ),
   
-  li: memo<BaseMarkdownProps>((props) => {
+  li: ({ children }) => {
     return (
       <motion.li 
         initial={{ opacity: 0, x: -200 }}
@@ -93,45 +92,64 @@ const MarkdownComponents = {
               <Asterisk className="w-4 h-4 text-gray-900" />
             </div>
             <span className="text-sm">
-              {props.children}
+              {children}
             </span>
           </div>
         </motion.div>
       </motion.li>
     );
-  }),
+  },
   
-  ol: memo<BaseMarkdownProps>((props) => (
-    <ol className="list-decimal list-inside my-4 leading-relaxed" {...props} />
-  )),
+  ol: ({ children }) => (
+    <ol className="list-decimal list-inside my-4 leading-relaxed">
+      {children}
+    </ol>
+  ),
 
-  a: memo(React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>((props, ref) => (
-    <a ref={ref} className="text-blue-600 underline cursor-pointer hover:text-blue-800" {...props} />
-  ))),
+  a: ({ href, children }) => (
+    <a 
+      href={href}
+      className="text-blue-600 underline cursor-pointer hover:text-blue-800"
+      target={href?.startsWith('http') ? '_blank' : undefined}
+      rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+    >
+      {children}
+    </a>
+  ),
 
-  code: memo<BaseMarkdownProps & { inline?: boolean }>(({ inline, ...props }) => (
+  code: ({ inline, children, className }) => (
     inline ? 
-      <code className="bg-gray-100 px-1 py-0.5 rounded" {...props} /> :
-      <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
-  )),
+      <code className="bg-gray-100 px-1 py-0.5 rounded">{children}</code> :
+      <code className={`block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto ${className || ''}`}>
+        {children}
+      </code>
+  ),
 
-  blockquote: memo(React.forwardRef<HTMLQuoteElement, React.BlockquoteHTMLAttributes<HTMLQuoteElement>>((props, ref) => (
-    <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
-  ))),
+  blockquote: ({ children }) => (
+    <blockquote className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic">
+      {children}
+    </blockquote>
+  ),
 
-  table: memo<BaseMarkdownProps>((props) => (
+  table: ({ children }) => (
     <div className="overflow-x-auto my-8">
-      <table className="min-w-full border-separate border-spacing-0" {...props} />
+      <table className="min-w-full border-separate border-spacing-0">
+        {children}
+      </table>
     </div>
-  )),
+  ),
   
-  th: memo<BaseMarkdownProps>((props) => (
-    <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
-  )),
+  th: ({ children }) => (
+    <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+      {children}
+    </th>
+  ),
   
-  td: memo<BaseMarkdownProps>((props) => (
-    <td className="p-6 whitespace-nowrap text-sm text-gray-500" {...props} />
-  )),
+  td: ({ children }) => (
+    <td className="p-6 whitespace-nowrap text-sm text-gray-500">
+      {children}
+    </td>
+  ),
 };
 
 // Define the SectionedMarkdown component with improved typing and error handling
@@ -250,9 +268,6 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
     );
   }
 };
-
-// Export components for potential reuse in other files
-export { MarkdownComponents };
 
 // Main CaseStudy component
 export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPageProps) {
