@@ -222,7 +222,7 @@ interface CaseStudy {
 //  prevStudy: CaseStudy | null;
 // }
 
-export default function CaseStudy({ study, nextStudy, prevStudy, lastGenerated }: CaseStudyPageProps) {
+export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPageProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   

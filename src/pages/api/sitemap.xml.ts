@@ -18,6 +18,9 @@ const getLastModified = (filePath: string) => {
   try {
     const stats = fs.statSync(filePath);
     return formatDate(stats.mtime);
+  } catch (error) {
+    console.error(`Error getting last modified date for ${filePath}:`, error);
+    return formatDate(new Date()); // Return today's date as fallback
   }
 };
 
