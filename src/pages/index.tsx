@@ -8,7 +8,8 @@ import Footer from './components/footer';
 import CaseStudyCard from './components/case-study-card';
 import { useState, useRef } from 'react';
 import "@fontsource-variable/jetbrains-mono";
-import SEO from './components/SEO'; // Import the SEO component
+import SEO from './components/SEO';
+import { OptimizedImage } from './components/OptimizedImage';
 
 // Types
 interface CaseStudy {

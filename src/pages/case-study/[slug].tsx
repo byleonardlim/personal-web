@@ -7,6 +7,7 @@ import matter from 'gray-matter';
 import ReactMarkdown from 'react-markdown';
 import Footer from '../components/footer';
 import SEO from '../components/SEO';
+import { OptimizedImage } from '../components/OptimizedImage';
 import { ArrowLeft, HomeIcon, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
@@ -121,79 +122,15 @@ const StyledComponent = memo(({ className, children, ...props }: { className: st
 
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: string; alt?: string; }) => {
-  // Preprocess the URL immediately to avoid even attempting bad requests
-  const processImageSrc = (sourcePath: string): string => {
-    // Check if the image is remote (starts with http:// or https://)
-    const isRemoteImage = sourcePath.startsWith('http://') || sourcePath.startsWith('https://');
-    
-    if (isRemoteImage) {
-      return sourcePath;
-    }
-    
-    // Process local path
-    let processedPath = sourcePath;
-    
-    // Remove 'public/' from the beginning as Next.js serves from public as root
-    processedPath = processedPath.replace(/^\/public\//, '/').replace(/^public\//, '/');
-    
-    // Ensure the path starts with a slash
-    if (!processedPath.startsWith('/')) {
-      processedPath = '/' + processedPath;
-    }
-    
-    // Remove any trailing slashes that would cause 400 errors
-    processedPath = processedPath.replace(/\/+$/, '');
-    
-    // Check for test-image.png or other patterns that indicate placeholder content
-    const isTestImage = /test-image\.(png|jpg|jpeg|svg)/i.test(processedPath);
-    
-    return processedPath;
-  };
-
-  // Process the source immediately 
-  const initialSrc = processImageSrc(src);
-  const [imageSrc, setImageSrc] = useState<string>(initialSrc);
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Handle image load errors
-  const handleImageError = () => {
-    console.error('Image loading error for path:', imageSrc);
-    setImageError(true);
-  //  setImageSrc('/api/placeholder/800/450');
-  };
-
-  // Track when image successfully loads
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
   return (
     <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
-      {/* Image container */}
+      {/* Image container with optimized Next.js Image */}
       <div className="relative z-10">
-        {imageError ? (
-          // Display a placeholder with error message when the image fails to load
-          <div className="bg-white rounded-md px-8 py-16 shadow-lg text-center min-h-[200px] flex flex-col items-center justify-center">
-            <div className="text-sm text-gray-500">
-              <div className="mb-2 font-medium">Image not available</div>
-              <div className="text-xs opacity-75">Original path: {src}</div>
-            </div>
-          </div>
-        ) : (
-          // Image with natural proportions
-          <div className="relative shadow-lg overflow-hidden rounded-md">
-            {/* Using a regular img element with next/image's unoptimized prop isn't ideal for responsive images */}
-            <img 
-              src={imageSrc}
-              alt={alt || 'Case study image'}
-              className="w-full h-auto rounded-md transition-all duration-300"
-              onError={handleImageError}
-              onLoad={handleImageLoad}
-              loading="lazy"
-            />
-          </div>
-        )}
+        <OptimizedImage 
+          src={src} 
+          alt={alt || 'Case study image'} 
+          className="shadow-lg"
+        />
       </div>
     </figure>
   );
@@ -348,7 +285,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
         image={getFirstImage()}
         article={true}
       />
-      
+
       <motion.div
         key={router.asPath}
         custom={direction}
