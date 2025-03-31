@@ -1,6 +1,5 @@
 /* eslint-disable react/display-name */
-/* eslint-disable react/no-unused-vars */
-import { motion, Variants, MotionProps } from 'motion/react';
+import { motion, Variants } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import ReactMarkdown from 'react-markdown';
@@ -11,9 +10,8 @@ import { OptimizedImage } from '../components/OptimizedImage';
 import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo } from 'react';
-import { CaseStudyPageProps, CaseStudy as CaseStudyType } from '@/types/case-study';
+import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
-import { NextApiResponse } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 
 // Define interfaces for components
