@@ -1,18 +1,19 @@
 /* eslint-disable react/display-name */
-import { motion } from 'motion/react';
+import { motion, Variants, MotionProps } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import ReactMarkdown from 'react-markdown';
+import { Components } from 'react-markdown';
 import Footer from '../components/footer';
 import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
 import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo } from 'react';
-import { CaseStudyPageProps } from '@/types/case-study';
+import { CaseStudyPageProps, CaseStudy as CaseStudyType } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 import { NextApiResponse } from 'next';
-import { Components } from 'react-markdown';
+import { ParsedUrlQuery } from 'querystring';
 
 // Define interfaces for components
 interface SectionedMarkdownProps {
@@ -33,8 +34,14 @@ interface NotesSection {
   index: number;
 }
 
+// Type for image props
+interface MarkdownImageProps {
+  src: string;
+  alt?: string;
+}
+
 // Enhanced image component with adaptive sizing based on image dimensions
-const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
+const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
   return (
     <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
       {/* Image container with optimized Next.js Image */}
@@ -108,7 +115,7 @@ const MarkdownComponents: Components = {
 
   a: ({ href, children }) => (
     <a 
-      href={href}
+      href={href || '#'}
       className="text-blue-600 underline cursor-pointer hover:text-blue-800"
       target={href?.startsWith('http') ? '_blank' : undefined}
       rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -147,6 +154,10 @@ const MarkdownComponents: Components = {
 // Define the SectionedMarkdown component with improved typing and error handling
 const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
   try {
+    if (!content) {
+      return <div>No content available</div>;
+    }
+    
     // Split content by h2 headings
     const sections = content.split(/(?=^## )/gm);
     
@@ -261,25 +272,47 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
   }
 };
 
+// Define proper types for animations
+type TransitionDirection = number;
+
+interface AnimationVariant {
+  opacity: number;
+  x: number;
+  transition?: {
+    x?: {
+      type: string;
+      stiffness: number;
+      damping: number;
+    };
+    opacity?: {
+      duration: number;
+    };
+  };
+}
+
 // Main CaseStudy component
-export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPageProps) {
+export default function CaseStudy({ 
+  study, 
+  nextStudy, 
+  prevStudy 
+}: CaseStudyPageProps): JSX.Element {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
   useEffect(() => {
-    // Set up router event listeners
-    const handleStart = (url: string) => {
+    // Set up router event listeners with proper types
+    const handleStart = (url: string): void => {
       // Only set loading to true if we're navigating to a different page
       if (url !== router.asPath) {
         setIsLoading(true);
       }
     };
 
-    const handleComplete = () => {
+    const handleComplete = (): void => {
       setIsLoading(false);
     };
 
-    const handleError = () => {
+    const handleError = (): void => {
       setIsLoading(false);
     };
 
@@ -295,24 +328,6 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
       router.events.off('routeChangeError', handleError);
     };
   }, [router.events, router.asPath]); // Add router.asPath to dependency array
-
-  // Define transition types
-  type TransitionDirection = number;
-  
-  interface AnimationVariant {
-    opacity: number;
-    x: number;
-    transition?: {
-      x?: {
-        type: string;
-        stiffness: number;
-        damping: number;
-      };
-      opacity?: {
-        duration: number;
-      };
-    };
-  }
   
   // Page transition variants with proper typing
   const pageVariants: {
@@ -342,8 +357,8 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
     })
   };
 
-  // Navigation handler with direction
-  const handleNavigation = useCallback(async (path: string, direction: number) => {
+  // Navigation handler with direction - properly typed
+  const handleNavigation = useCallback(async (path: string, direction: number): Promise<void> => {
     await router.push({
       pathname: path,
       query: { direction }
@@ -352,7 +367,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
 
   // Parse direction query parameter with safer type handling
   const direction = typeof router.query.direction === 'string' 
-    ? parseInt(router.query.direction, 10) 
+    ? parseInt(router.query.direction, 10) || 0 // Handle NaN case
     : 0;
 
   if (isLoading) {
@@ -366,9 +381,11 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
     );
   }
 
-  const getFirstImage = () => {
+  // Extract first image path with proper null checking
+  const getFirstImage = (): string => {
+    if (!study.content) return '/assets/images/og-image.png';
     const imgMatch = study.content.match(/!\[.*?\]\((.*?)\)/);
-    return imgMatch ? imgMatch[1] : '/assets/images/og-image.png';
+    return imgMatch && imgMatch[1] ? imgMatch[1] : '/assets/images/og-image.png';
   };
 
   return (
@@ -386,7 +403,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
         initial="initial"
         animate="animate"
         exit="exit"
-        variants={pageVariants}
+        variants={pageVariants as unknown as Variants}
         className="min-h-screen"
       >
         <div
@@ -478,14 +495,15 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
   );
 }
 
-export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async ({ 
+interface ServerSideProps extends ParsedUrlQuery {
+  slug: string;
+}
+
+export const getServerSideProps: GetServerSideProps<CaseStudyPageProps, ServerSideProps> = async ({ 
   params, 
   res 
-}: { 
-  params: { slug: string }; 
-  res: NextApiResponse;
 }) => {
-  // Validate the slug parameter
+  // Validate the slug parameter with proper type checking
   if (!params?.slug) {
     console.warn('No slug provided in getServerSideProps');
     return {
@@ -496,10 +514,12 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
   const { slug } = params;
   
   // Set caching headers for performance optimization
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  );
+  if (res) {
+    res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=60, stale-while-revalidate=300'
+    );
+  }
 
   try {
     // Get case study
@@ -527,7 +547,7 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
   } catch (error) {
     // Log the error with more context for debugging
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorStack = error instanceof Error ? error.stack : '';
+    const errorStack = error instanceof Error ? error.stack : undefined;
     
     console.error(`Error loading case study [${slug}]:`, {
       message: errorMessage,
