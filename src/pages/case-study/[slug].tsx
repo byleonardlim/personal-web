@@ -117,18 +117,6 @@ const MarkdownComponents: Components = {
     </a>
   ),
 
-  code: ({ inline, className, children, ...props }) => {
-    return inline ? (
-      <code className="bg-gray-100 px-1 py-0.5 rounded" {...props}>
-        {children}
-      </code>
-    ) : (
-      <code className={`block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto ${className || ''}`} {...props}>
-        {children}
-      </code>
-    );
-  },
-
   blockquote: ({ children }) => (
     <blockquote className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic">
       {children}
