@@ -11,9 +11,24 @@ import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
+import { NextApiResponse } from 'next';
 
 interface SectionedMarkdownProps {
   content: string;
+}
+
+interface Section {
+  type: 'intro' | 'section';
+  content: string;
+  index: number;
+  heading?: string;
+}
+
+interface NotesSection {
+  type: 'notes';
+  heading: string;
+  content: string;
+  index: number;
 }
 
 const SectionedMarkdown = ({ content }: SectionedMarkdownProps) => {
@@ -21,8 +36,8 @@ const SectionedMarkdown = ({ content }: SectionedMarkdownProps) => {
   const sections = content.split(/(?=^## )/gm);
   
   // Store notes section separately
-  let notesSection = null;
-  const mainSections = [];
+  let notesSection: NotesSection | null = null;
+  const mainSections: Section[] = [];
   
   sections.forEach((section, index) => {
     if (!section.trim()) return;
@@ -129,7 +144,12 @@ const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
 
 MarkdownImage.displayName = 'MarkdownImage';
 
-// Memoized Markdown components for better performance
+interface BaseMarkdownProps {
+  children?: React.ReactNode;
+  className?: string;
+  [key: string]: any;
+}
+
 const MarkdownComponents = {
   img: MarkdownImage,
   
@@ -137,20 +157,15 @@ const MarkdownComponents = {
     <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
   )),
 
-  p: memo((props) => (
+  p: memo<BaseMarkdownProps>((props) => (
     <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
   )),
 
-
-  ul: memo((props) => (
+  ul: memo<BaseMarkdownProps>((props) => (
     <ul className="my-8 space-y-4 list-none" {...props} />
   )),
   
-  li: memo((props) => {
-//    const text = typeof props.children === 'string' 
-//      ? props.children 
-//      : JSON.stringify(props.children);
-    
+  li: memo<BaseMarkdownProps>((props) => {
     return (
       <motion.li 
         initial={{ opacity: 0, x: -200 }}
@@ -178,7 +193,7 @@ const MarkdownComponents = {
     );
   }),
   
-  ol: memo((props) => (
+  ol: memo<BaseMarkdownProps>((props) => (
     <ol className="list-decimal list-inside my-4 leading-relaxed" {...props} />
   )),
 
@@ -186,7 +201,7 @@ const MarkdownComponents = {
     <a ref={ref} className="text-blue-600 underline cursor-pointer hover:text-blue-800" {...props} />
   ))),
 
-  code: memo(({ inline, ...props }: { inline?: boolean }) => (
+  code: memo<BaseMarkdownProps & { inline?: boolean }>(({ inline, ...props }) => (
     inline ? 
       <code className="bg-gray-100 px-1 py-0.5 rounded" {...props} /> :
       <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
@@ -196,17 +211,17 @@ const MarkdownComponents = {
     <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
   ))),
 
-  table: memo((props) => (
+  table: memo<BaseMarkdownProps>((props) => (
     <div className="overflow-x-auto my-8">
       <table className="min-w-full border-separate border-spacing-0" {...props} />
     </div>
   )),
   
-  th: memo((props) => (
+  th: memo<BaseMarkdownProps>((props) => (
     <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
   )),
   
-  td: memo((props) => (
+  td: memo<BaseMarkdownProps>((props) => (
     <td className="p-6 whitespace-nowrap text-sm text-gray-500" {...props} />
   )),
 };
@@ -417,8 +432,14 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
-  const { slug } = params as { slug: string };
+export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async ({ 
+  params, 
+  res 
+}: { 
+  params: { slug: string }; 
+  res: NextApiResponse;
+}) => {
+  const { slug } = params;
   
   // Set caching headers for performance optimization
   res.setHeader(
