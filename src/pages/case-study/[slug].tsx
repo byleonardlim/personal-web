@@ -405,12 +405,6 @@ export default function CaseStudy({
         variants={pageVariants as unknown as Variants}
         className="min-h-screen"
       >
-        <div
-          className="fixed inset-0 w-full h-full -z-10"
-          style={{
-            background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
-          }}
-        />
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-20">
           {/* Back to Home Link */}
           <motion.div

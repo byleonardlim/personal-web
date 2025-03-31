@@ -65,12 +65,6 @@ export default function Home({ caseStudies }: HomeProps) {
       
       <div ref={containerRef} className="relative">
         <main className="min-h-screen relative overflow-x-hidden">        
-          <div
-            className="fixed inset-0 w-full h-full -z-10"
-            style={{
-              background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
-            }}
-          />
           <div className="relative z-10">
             {/* Landing Section */}
             <motion.section 
