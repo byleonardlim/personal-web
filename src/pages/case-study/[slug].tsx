@@ -134,100 +134,121 @@ const MarkdownComponents = {
   )),
 };
 
-// Define the SectionedMarkdown component with proper typing
+// Define the SectionedMarkdown component with improved typing and error handling
 const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
-  // Split content by h2 headings
-  const sections = content.split(/(?=^## )/gm);
-  
-  // Store notes section separately
-  let notesSection: NotesSection | null = null;
-  const mainSections: Section[] = [];
-  
-  sections.forEach((section, index) => {
-    if (!section.trim()) return;
+  try {
+    // Split content by h2 headings
+    const sections = content.split(/(?=^## )/gm);
     
-    if (!section.startsWith('## ')) {
-      // This is content before any heading (intro content)
-      mainSections.push({
-        type: 'intro',
-        content: section,
-        index
-      });
-      return;
-    }
+    // Store notes section separately
+    let notesSection: NotesSection | null = null;
+    const mainSections: Section[] = [];
     
-    // Extract the heading and content
-    const headingMatch = section.match(/^## (.*?)$/m);
-    const headingText = headingMatch ? headingMatch[1].trim() : '';
-    const sectionContent = section.replace(/^## .*?$/m, '').trim();
-    
-    // Check if it's a notes section
-    const isNotesSection = headingText.toLowerCase().includes('notes');
-    
-    if (isNotesSection) {
-      notesSection = {
-        type: 'notes',
-        heading: headingText,
-        content: sectionContent,
-        index
-      };
-    } else {
-      mainSections.push({
-        type: 'section',
-        heading: headingText,
-        content: sectionContent,
-        index
-      });
-    }
-  });
-  
-  return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      {/* Main content column */}
-      <div className="lg:w-2/3">
-        {mainSections.map((section) => {
-          if (section.type === 'intro') {
-            return (
-              <div key={`intro-${section.index}`} className="mb-8">
-                <ReactMarkdown components={MarkdownComponents}>
-                  {section.content}
-                </ReactMarkdown>
-              </div>
-            );
-          } else {
-            return (
-              <section key={`section-${section.index}`} className="mb-8">
-                <h2 className="text-lg font-bold mb-4 uppercase">
-                  {section.heading}
-                </h2>
-                <div className="text-md leading-relaxed">
-                  <ReactMarkdown components={MarkdownComponents}>
-                    {section.content}
-                  </ReactMarkdown>
-                </div>
-              </section>
-            );
-          }
-        })}
-      </div>
+    sections.forEach((section, index) => {
+      if (!section.trim()) return;
       
-      {/* Notes column (sticky) */}
-      {notesSection && (
-        <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
-          <div className="sticky lg:top-8 border border-gray-100 lg:rounded-lg p-6 bg-gray-50">
-            <h2 className="text-lg font-bold mb-4 text-gray-700 uppercase">
-              {notesSection.heading}
-            </h2>
-            <div className="text-sm text-gray-600 leading-relaxed">
+      if (!section.startsWith('## ')) {
+        // This is content before any heading (intro content)
+        mainSections.push({
+          type: 'intro',
+          content: section,
+          index
+        });
+        return;
+      }
+      
+      // Extract the heading and content using safer approach
+      const headingMatch = section.match(/^## (.*?)$/m);
+      const headingText = headingMatch?.[1]?.trim() || 'Untitled Section';
+      const sectionContent = section.replace(/^## .*?$/m, '').trim();
+      
+      // Check if it's a notes section
+      const isNotesSection = headingText.toLowerCase().includes('notes');
+      
+      if (isNotesSection) {
+        notesSection = {
+          type: 'notes',
+          heading: headingText,
+          content: sectionContent,
+          index
+        };
+      } else {
+        mainSections.push({
+          type: 'section',
+          heading: headingText,
+          content: sectionContent,
+          index
+        });
+      }
+    });
+    
+    return (
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Main content column */}
+        <div className="lg:w-2/3">
+          {mainSections.length > 0 ? (
+            mainSections.map((section) => {
+              if (section.type === 'intro') {
+                return (
+                  <div key={`intro-${section.index}`} className="mb-8">
+                    <ReactMarkdown components={MarkdownComponents}>
+                      {section.content}
+                    </ReactMarkdown>
+                  </div>
+                );
+              } else {
+                return (
+                  <section key={`section-${section.index}`} className="mb-8">
+                    <h2 className="text-lg font-bold mb-4 uppercase">
+                      {section.heading}
+                    </h2>
+                    <div className="text-md leading-relaxed">
+                      <ReactMarkdown components={MarkdownComponents}>
+                        {section.content}
+                      </ReactMarkdown>
+                    </div>
+                  </section>
+                );
+              }
+            })
+          ) : (
+            // Fallback if no sections are found
+            <div className="mb-8">
               <ReactMarkdown components={MarkdownComponents}>
-                {notesSection.content}
+                {content}
               </ReactMarkdown>
             </div>
-          </div>
+          )}
         </div>
-      )}
-    </div>
-  );
+        
+        {/* Notes column (sticky) */}
+        {notesSection && (
+          <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
+            <div className="sticky lg:top-8 border border-gray-100 lg:rounded-lg p-6 bg-gray-50">
+              <h2 className="text-lg font-bold mb-4 text-gray-700 uppercase">
+                {notesSection.heading}
+              </h2>
+              <div className="text-sm text-gray-600 leading-relaxed">
+                <ReactMarkdown components={MarkdownComponents}>
+                  {notesSection.content}
+                </ReactMarkdown>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  } catch (error) {
+    // Fallback for any parsing errors
+    console.error('Error parsing markdown content:', error);
+    return (
+      <div className="markdown-content">
+        <ReactMarkdown components={MarkdownComponents}>
+          {content}
+        </ReactMarkdown>
+      </div>
+    );
+  }
 };
 
 // Export components for potential reuse in other files
@@ -266,11 +287,33 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
       router.events.off('routeChangeComplete', handleComplete);
       router.events.off('routeChangeError', handleError);
     };
-  }, [router]);
+  }, [router.events, router.asPath]); // Add router.asPath to dependency array
 
-  // Page transition variants
-  const pageVariants = {
-    initial: (direction: number) => ({
+  // Define transition types
+  type TransitionDirection = number;
+  
+  interface AnimationVariant {
+    opacity: number;
+    x: number;
+    transition?: {
+      x?: {
+        type: string;
+        stiffness: number;
+        damping: number;
+      };
+      opacity?: {
+        duration: number;
+      };
+    };
+  }
+  
+  // Page transition variants with proper typing
+  const pageVariants: {
+    initial: (direction: TransitionDirection) => AnimationVariant;
+    animate: AnimationVariant;
+    exit: (direction: TransitionDirection) => AnimationVariant;
+  } = {
+    initial: (direction: TransitionDirection) => ({
       opacity: 0,
       x: direction > 0 ? 1000 : -1000
     }),
@@ -282,7 +325,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
         opacity: { duration: 0.2 }
       }
     },
-    exit: (direction: number) => ({
+    exit: (direction: TransitionDirection) => ({
       opacity: 0,
       x: direction > 0 ? -1000 : 1000,
       transition: {
@@ -300,7 +343,10 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPage
     }, path);
   }, [router]);
 
-  const direction = router.query.direction ? parseInt(router.query.direction as string) : 0;
+  // Parse direction query parameter with safer type handling
+  const direction = typeof router.query.direction === 'string' 
+    ? parseInt(router.query.direction, 10) 
+    : 0;
 
   if (isLoading) {
     return (
@@ -432,6 +478,14 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
   params: { slug: string }; 
   res: NextApiResponse;
 }) => {
+  // Validate the slug parameter
+  if (!params?.slug) {
+    console.warn('No slug provided in getServerSideProps');
+    return {
+      notFound: true,
+    };
+  }
+
   const { slug } = params;
   
   // Set caching headers for performance optimization
@@ -445,6 +499,7 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
     const study = await getCaseStudyBySlug(slug);
     
     if (!study) {
+      console.warn(`Case study not found for slug: ${slug}`);
       return {
         notFound: true,
       };
@@ -453,6 +508,7 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
     // Get adjacent case studies
     const { nextStudy, prevStudy } = await getAdjacentCaseStudies(slug);
 
+    // Return the props with a timestamp for debugging
     return {
       props: {
         study,
@@ -462,8 +518,17 @@ export const getServerSideProps: GetServerSideProps<CaseStudyPageProps> = async 
       },
     };
   } catch (error) {
-    console.error(`Error loading case study [${slug}]:`, error);
+    // Log the error with more context for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : '';
     
+    console.error(`Error loading case study [${slug}]:`, {
+      message: errorMessage,
+      stack: errorStack,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Return 404 to avoid exposing error details to the user
     return {
       notFound: true,
     };
