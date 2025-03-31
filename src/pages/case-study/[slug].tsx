@@ -1,4 +1,10 @@
 /* eslint-disable react/display-name */
+declare namespace JSX {
+  interface IntrinsicElements {
+    [elemName: string]: any;
+  }
+}
+
 import { motion, Variants } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
