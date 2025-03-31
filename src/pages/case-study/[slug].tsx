@@ -13,6 +13,7 @@ import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 import { NextApiResponse } from 'next';
 
+// Define interfaces for components
 interface SectionedMarkdownProps {
   content: string;
 }
@@ -31,7 +32,110 @@ interface NotesSection {
   index: number;
 }
 
-const SectionedMarkdown = ({ content }: SectionedMarkdownProps) => {
+interface BaseMarkdownProps {
+  children?: React.ReactNode;
+  className?: string;
+  [key: string]: React.ReactNode | string | undefined;
+}
+
+// Enhanced image component with adaptive sizing based on image dimensions
+const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
+  return (
+    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
+      {/* Image container with optimized Next.js Image */}
+      <div className="relative z-10">
+        <OptimizedImage 
+          src={src} 
+          alt={alt || 'Case study image'} 
+          className="shadow-lg"
+        />
+      </div>
+    </figure>
+  );
+});
+
+// Set displayName for memoized component to help with debugging
+MarkdownImage.displayName = 'MarkdownImage';
+
+// Move MarkdownComponents outside the component scope to prevent re-renders
+const MarkdownComponents = {
+  img: MarkdownImage,
+  
+  h3: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
+    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
+  )),
+
+  p: memo<BaseMarkdownProps>((props) => (
+    <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
+  )),
+
+  ul: memo<BaseMarkdownProps>((props) => (
+    <ul className="my-8 space-y-4 list-none" {...props} />
+  )),
+  
+  li: memo<BaseMarkdownProps>((props) => {
+    return (
+      <motion.li 
+        initial={{ opacity: 0, x: -200 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ 
+          duration: 0.4, 
+          ease: [0.25, 0.1, 0.25, 1.0]
+        }}
+        className="group"
+      >
+        <motion.div
+          className="p-4 border border-current transition-all duration-300"
+        >
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mr-3">
+              <Asterisk className="w-4 h-4 text-gray-900" />
+            </div>
+            <span className="text-sm">
+              {props.children}
+            </span>
+          </div>
+        </motion.div>
+      </motion.li>
+    );
+  }),
+  
+  ol: memo<BaseMarkdownProps>((props) => (
+    <ol className="list-decimal list-inside my-4 leading-relaxed" {...props} />
+  )),
+
+  a: memo(React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>((props, ref) => (
+    <a ref={ref} className="text-blue-600 underline cursor-pointer hover:text-blue-800" {...props} />
+  ))),
+
+  code: memo<BaseMarkdownProps & { inline?: boolean }>(({ inline, ...props }) => (
+    inline ? 
+      <code className="bg-gray-100 px-1 py-0.5 rounded" {...props} /> :
+      <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
+  )),
+
+  blockquote: memo(React.forwardRef<HTMLQuoteElement, React.BlockquoteHTMLAttributes<HTMLQuoteElement>>((props, ref) => (
+    <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
+  ))),
+
+  table: memo<BaseMarkdownProps>((props) => (
+    <div className="overflow-x-auto my-8">
+      <table className="min-w-full border-separate border-spacing-0" {...props} />
+    </div>
+  )),
+  
+  th: memo<BaseMarkdownProps>((props) => (
+    <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
+  )),
+  
+  td: memo<BaseMarkdownProps>((props) => (
+    <td className="p-6 whitespace-nowrap text-sm text-gray-500" {...props} />
+  )),
+};
+
+// Define the SectionedMarkdown component with proper typing
+const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
   // Split content by h2 headings
   const sections = content.split(/(?=^## )/gm);
   
@@ -126,121 +230,10 @@ const SectionedMarkdown = ({ content }: SectionedMarkdownProps) => {
   );
 };
 
-// Enhanced image component with adaptive sizing based on image dimensions
-const MarkdownImage = memo(({ src, alt }: { src: string; alt?: string; }) => {
-  return (
-    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
-      {/* Image container with optimized Next.js Image */}
-      <div className="relative z-10">
-        <OptimizedImage 
-          src={src} 
-          alt={alt || 'Case study image'} 
-          className="shadow-lg"
-        />
-      </div>
-    </figure>
-  );
-});
-
-MarkdownImage.displayName = 'MarkdownImage';
-
-interface BaseMarkdownProps {
-  children?: React.ReactNode;
-  className?: string;
-  [key: string]: React.ReactNode | string | undefined;
-}
-
-const MarkdownComponents = {
-  img: MarkdownImage,
-  
-  h3: memo<React.HTMLAttributes<HTMLHeadingElement>>((props) => (
-    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
-  )),
-
-  p: memo<BaseMarkdownProps>((props) => (
-    <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
-  )),
-
-  ul: memo<BaseMarkdownProps>((props) => (
-    <ul className="my-8 space-y-4 list-none" {...props} />
-  )),
-  
-  li: memo<BaseMarkdownProps>((props) => {
-    return (
-      <motion.li 
-        initial={{ opacity: 0, x: -200 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ 
-          duration: 0.4, 
-          ease: [0.25, 0.1, 0.25, 1.0]
-        }}
-        className="group"
-      >
-        <motion.div
-          className="p-4 border border-current transition-all duration-300"
-        >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 mr-3">
-              <Asterisk className="w-4 h-4 text-gray-900" />
-            </div>
-            <span className="text-sm">
-              {props.children}
-            </span>
-          </div>
-        </motion.div>
-      </motion.li>
-    );
-  }),
-  
-  ol: memo<BaseMarkdownProps>((props) => (
-    <ol className="list-decimal list-inside my-4 leading-relaxed" {...props} />
-  )),
-
-  a: memo(React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>((props, ref) => (
-    <a ref={ref} className="text-blue-600 underline cursor-pointer hover:text-blue-800" {...props} />
-  ))),
-
-  code: memo<BaseMarkdownProps & { inline?: boolean }>(({ inline, ...props }) => (
-    inline ? 
-      <code className="bg-gray-100 px-1 py-0.5 rounded" {...props} /> :
-      <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
-  )),
-
-  blockquote: memo(React.forwardRef<HTMLQuoteElement, React.BlockquoteHTMLAttributes<HTMLQuoteElement>>((props, ref) => (
-    <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
-  ))),
-
-  table: memo<BaseMarkdownProps>((props) => (
-    <div className="overflow-x-auto my-8">
-      <table className="min-w-full border-separate border-spacing-0" {...props} />
-    </div>
-  )),
-  
-  th: memo<BaseMarkdownProps>((props) => (
-    <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
-  )),
-  
-  td: memo<BaseMarkdownProps>((props) => (
-    <td className="p-6 whitespace-nowrap text-sm text-gray-500" {...props} />
-  )),
-};
-
+// Export components for potential reuse in other files
 export { MarkdownComponents };
 
-// Case Studies
-interface CaseStudy {
-  title: string;
-  content: string;
-  slug: string;
-}
-
-//interface CaseStudyProps {
-//  study: CaseStudy;
-//  nextStudy: CaseStudy | null;
-//  prevStudy: CaseStudy | null;
-// }
-
+// Main CaseStudy component
 export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyPageProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
