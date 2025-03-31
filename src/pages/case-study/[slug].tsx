@@ -1,14 +1,11 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
 import ReactMarkdown from 'react-markdown';
 import Footer from '../components/footer';
 import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
-import { ArrowLeft, HomeIcon, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
+import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
