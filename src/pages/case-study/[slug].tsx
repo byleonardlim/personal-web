@@ -150,11 +150,11 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
     // Split content by h2 headings
     const sections = content.split(/(?=^## )/gm);
     
-    // Store notes section separately
+    // Store notes section separately with proper typing
     let notesSection: NotesSection | null = null;
     const mainSections: Section[] = [];
     
-    sections.forEach((section, index) => {
+    sections.forEach((section: string, index: number) => {
       if (!section.trim()) return;
       
       if (!section.startsWith('## ')) {
