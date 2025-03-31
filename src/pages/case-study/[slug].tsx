@@ -117,7 +117,7 @@ const MarkdownComponents: Components = {
     </a>
   ),
 
-  code: ({ node, inline, className, children, ...props }) => {
+  code: ({ inline, className, children, ...props }) => {
     return inline ? (
       <code className="bg-gray-100 px-1 py-0.5 rounded" {...props}>
         {children}
