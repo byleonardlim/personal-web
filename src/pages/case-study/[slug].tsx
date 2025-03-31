@@ -1,5 +1,4 @@
 /* eslint-disable react/display-name */
-import React from 'react';
 import { motion, Variants } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
