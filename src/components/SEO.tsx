@@ -1,4 +1,3 @@
-// src/components/SEO.tsx
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 

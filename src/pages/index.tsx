@@ -4,11 +4,11 @@ import { GetStaticProps } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import Footer from './components/footer';
-import CaseStudyCard from './components/case-study-card';
+import Footer from '@/components/footer';
+import CaseStudyCard from '@/components/case-study-card';
 import { useState, useRef } from 'react';
 import "@fontsource-variable/jetbrains-mono";
-import SEO from './components/SEO';
+import SEO from '@/components/SEO';
 
 // Types
 interface CaseStudy {
