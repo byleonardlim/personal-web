@@ -15,7 +15,7 @@ export default async function handler(
     const caseStudies = await getAllCaseStudies();
     
     // Remove content field to reduce payload size
-    const studies = caseStudies.map(({ content, ...study }) => study);
+    const studies = caseStudies.map(({ ...study }) => study);
     
     // Set cache headers
     res.setHeader(

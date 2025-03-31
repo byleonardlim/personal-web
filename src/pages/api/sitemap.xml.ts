@@ -1,8 +1,6 @@
-// src/pages/api/sitemap.xml.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
 
 // This function gets all case study slugs
 const getCaseStudySlugs = () => {
@@ -20,8 +18,6 @@ const getLastModified = (filePath: string) => {
   try {
     const stats = fs.statSync(filePath);
     return formatDate(stats.mtime);
-  } catch (err) {
-    return formatDate(new Date());
   }
 };
 

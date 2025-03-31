@@ -7,15 +7,9 @@ import SEO from '../components/SEO';
 import { OptimizedImage } from '../components/OptimizedImage';
 import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
-import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
+import React, { useState, useCallback, useEffect, memo } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
-
-// Base component for common props
-interface BaseProps {
-  node?: any; // Replace with the actual type if known
-  [key: string]: any; // Allow additional props
-}
 
 const SectionedMarkdown = ({ content }) => {
   // Split content by h2 headings
@@ -112,13 +106,6 @@ const SectionedMarkdown = ({ content }) => {
   );
 };
 
-// Base styled component
-const StyledComponent = memo(({ className, children, ...props }: { className: string; children: React.ReactNode }) => (
-  <div className={className} {...props}>
-      {children}
-  </div>
-));
-
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: string; alt?: string; }) => {
   return (
@@ -145,16 +132,16 @@ const MarkdownComponents = {
     <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent" {...props} />
   )),
 
-  p: memo((props: BaseProps) => (
+  p: memo((props) => (
     <div className="text-gray-600 text-md leading-relaxed mb-4" {...props} />
   )),
 
 
-  ul: memo((props: BaseProps) => (
+  ul: memo((props) => (
     <ul className="my-8 space-y-4 list-none" {...props} />
   )),
   
-  li: memo((props: BaseProps) => {
+  li: memo((props) => {
     const text = typeof props.children === 'string' 
       ? props.children 
       : JSON.stringify(props.children);
@@ -186,7 +173,7 @@ const MarkdownComponents = {
     );
   }),
   
-  ol: memo((props: BaseProps) => (
+  ol: memo((props) => (
     <ol className="list-decimal list-inside my-4 leading-relaxed" {...props} />
   )),
 
@@ -194,7 +181,7 @@ const MarkdownComponents = {
     <a ref={ref} className="text-blue-600 underline cursor-pointer hover:text-blue-800" {...props} />
   ))),
 
-  code: memo(({ inline, ...props }: BaseProps & { inline?: boolean }) => (
+  code: memo(({ inline, ...props }: { inline?: boolean }) => (
     inline ? 
       <code className="bg-gray-100 px-1 py-0.5 rounded" {...props} /> :
       <code className="block bg-gray-100 p-4 rounded-lg my-4 overflow-x-auto" {...props} />
@@ -204,17 +191,17 @@ const MarkdownComponents = {
     <blockquote ref={ref} className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic" {...props} />
   ))),
 
-  table: memo((props: BaseProps) => (
+  table: memo((props) => (
     <div className="overflow-x-auto my-8">
       <table className="min-w-full border-separate border-spacing-0" {...props} />
     </div>
   )),
   
-  th: memo((props: BaseProps) => (
+  th: memo((props) => (
     <th className="p-6 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />
   )),
   
-  td: memo((props: BaseProps) => (
+  td: memo((props) => (
     <td className="p-6 whitespace-nowrap text-sm text-gray-500" {...props} />
   )),
 };
@@ -228,11 +215,11 @@ interface CaseStudy {
   slug: string;
 }
 
-interface CaseStudyProps {
-  study: CaseStudy;
-  nextStudy: CaseStudy | null;
-  prevStudy: CaseStudy | null;
-}
+//interface CaseStudyProps {
+//  study: CaseStudy;
+//  nextStudy: CaseStudy | null;
+//  prevStudy: CaseStudy | null;
+// }
 
 export default function CaseStudy({ study, nextStudy, prevStudy, lastGenerated }: CaseStudyPageProps) {
   const router = useRouter();
@@ -419,12 +406,6 @@ export default function CaseStudy({ study, nextStudy, prevStudy, lastGenerated }
             </div>
           </div>
         </div>
-        {/* Add a small debug indicator for development */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="fixed bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 z-50">
-            SSR: {new Date(lastGenerated).toISOString().split('T')[1].slice(0, 8)}
-          </div>
-        )}
       </motion.div>
       <Footer />
     </>
