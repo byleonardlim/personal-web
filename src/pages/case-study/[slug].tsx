@@ -8,7 +8,6 @@ import ReactMarkdown from 'react-markdown';
 import Footer from '../components/footer';
 import { ArrowLeft, HomeIcon, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
 
 // Base component for common props
@@ -64,7 +63,7 @@ const SectionedMarkdown = ({ content }) => {
   });
   
   return (
-    <div className="flex flex-col lg:flex-row gap-8 mt-8">
+    <div className="flex flex-col lg:flex-row gap-8">
       {/* Main content column */}
       <div className="lg:w-2/3">
         {mainSections.map((section) => {
@@ -169,7 +168,7 @@ const MarkdownImage = memo(({ node, src, alt, ...props }: { node: any; src: stri
   };
 
   return (
-    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] p-4 md:p-6">      
+    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
       {/* Image container */}
       <div className="relative z-10">
         {imageError ? (
@@ -227,7 +226,7 @@ const MarkdownComponents = {
       <motion.li 
         initial={{ opacity: 0, x: -200 }}
         whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false, margin: "-100px" }}
+        viewport={{ once: true, margin: "-100px" }}
         transition={{ 
           duration: 0.4, 
           ease: [0.25, 0.1, 0.25, 1.0]
@@ -344,8 +343,14 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
         animate="animate"
         exit="exit"
         variants={pageVariants}
-        className="min-h-screen bg-white"
+        className="min-h-screen"
       >
+        <div
+          className="fixed inset-0 w-full h-full -z-10"
+          style={{
+            background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
+          }}
+        />
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-20">
           {/* Back to Home Link */}
           <motion.div
@@ -356,7 +361,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
           >
             <Link 
               href="/"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group"
+              className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 transition-colors group"
             >
               <motion.div
                 whileHover={{ x: -4 }}
@@ -373,8 +378,8 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="mb-8 pb-4">
-              <h1 className="text-3xl lg:text-5xl font-bold mt-8 mb-4 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-gray-500 bg-clip-text text-transparent">{study.title}</h1>
+            <div className="pb-4">
+              <h1 className="text-2xl lg:text-4xl font-bold leading-relaxed uppercase">{study.title}</h1>
             </div>
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
@@ -386,7 +391,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
               {prevStudy && (
                 <button
                   onClick={() => handleNavigation(`/case-study/${prevStudy.slug}`, -1)}
-                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
                 >
                   <motion.div
                     whileHover={{ x: -4 }}
@@ -406,7 +411,7 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
               {nextStudy && (
                 <button
                   onClick={() => handleNavigation(`/case-study/${nextStudy.slug}`, 1)}
-                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors"
+                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
                 >
                   <div className="flex flex-col items-end">
                     <span className="text-xs text-gray-500">Next</span>

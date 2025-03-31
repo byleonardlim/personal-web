@@ -18,16 +18,16 @@ This isn't just Allison's problem. Across audit firms, professionals drown in in
 ## Fast and Factually Correct
 "The ask is simple — we need a way to trace findings back to their original source," says Allison. Client questions and partner reviews demand instant evidence to back up every claim.
 
-![Report Details](/assets/images/case-studies/quick-draw-reporting/test-image.png/)
+![Issues Details](/assets/images/case-studies/quick-draw-reporting/issues.png/)
 
 When engagements grow complex, team members must become reference librarians on the fly, pulling precise citations from a digital labyrinth of documents. For each finding, Allison needs to recall exactly which file, which page, which paragraph contains the supporting evidence.
 
 As engagements balloon with data, this mental mapping becomes unsustainable. What should be a simple "here's where we found this" turns into a frustrating treasure hunt through folders and files — the digital equivalent of searching for a specific sentence in a library without an index.
 
-> "I used to spend entire afternoons just gathering material for a single section, now I complete full first drafts before lunch, with available issues properly backed and traceable." — Allison.
-
 ## Acheive The First 40% in Minutes
 The solution leverages advanced natural language processing to analyze thousands of pages of audit evidence, automatically extracting key findings while maintaining links to source documents throughout the process. This isn't just a search function—it's a comprehensive knowledge layer that understands audit contexts and relationships.
+
+> "I used to spend entire afternoons just gathering material for a single section, now I complete full first drafts before lunch, with available issues properly backed and traceable." — Allison.
 
 Here's how it works for Allison:
 

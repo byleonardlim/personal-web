@@ -29,18 +29,17 @@ const ParentComponent = ({ caseStudies }) => {
 
   return (
       <section id="case-studies">
-                      <div className="space-y-4">
-                  {caseStudies.map((study, index) => (
-                      <CaseStudyCard 
-                          key={study.slug} 
-                          study={study} 
-                          index={index} 
-                          isExpanded={expandedIndex === index} // Check if this card is expanded
-                          onExpand={() => handleExpand(index)} // Pass down the handler
-                      />
-                  ))}
-              </div>
-
+          <div className="space-y-4">
+              {caseStudies.map((study, index) => (
+                  <CaseStudyCard 
+                      key={study.slug} 
+                      study={study} 
+                      index={index} 
+                      isExpanded={expandedIndex === index} // Check if this card is expanded
+                      onExpand={() => handleExpand(index)} // Pass down the handler
+                  />
+              ))}
+          </div>
       </section>
   );
 };
@@ -57,16 +56,13 @@ export default function Home({ caseStudies }: HomeProps) {
 
   return (
     <div ref={containerRef} className="relative">
-      <main className="min-h-screen relative overflow-x-hidden">
-        {/* Static Gradient Background - Cold Steel Blue to Off-White */}
+      <main className="min-h-screen relative overflow-x-hidden">        
         <div
           className="fixed inset-0 w-full h-full -z-10"
           style={{
             background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
           }}
         />
-        
-        {/* Content with transparent background to let gradient show through */}
         <div className="relative z-10">
           {/* Landing Section */}
           <motion.section 
