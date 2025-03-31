@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetServerSideProps } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -11,6 +11,8 @@ import { OptimizedImage } from '../components/OptimizedImage';
 import { ArrowLeft, HomeIcon, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
+import { CaseStudyPageProps } from '@/types/case-study';
+import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 
 // Base component for common props
 interface BaseProps {
@@ -235,9 +237,40 @@ interface CaseStudyProps {
   prevStudy: CaseStudy | null;
 }
 
-export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProps) {
+export default function CaseStudy({ study, nextStudy, prevStudy, lastGenerated }: CaseStudyPageProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   
+  useEffect(() => {
+    // Set up router event listeners
+    const handleStart = (url: string) => {
+      // Only set loading to true if we're navigating to a different page
+      if (url !== router.asPath) {
+        setIsLoading(true);
+      }
+    };
+
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+
+    const handleError = () => {
+      setIsLoading(false);
+    };
+
+    // Add event listeners
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleComplete);
+    router.events.on('routeChangeError', handleError);
+
+    // Clean up event listeners
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleComplete);
+      router.events.off('routeChangeError', handleError);
+    };
+  }, [router]);
+
   // Page transition variants
   const pageVariants = {
     initial: (direction: number) => ({
@@ -270,7 +303,18 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
     }, path);
   }, [router]);
 
-  const direction = parseInt(router.query.direction as string) || 0;
+  const direction = router.query.direction ? parseInt(router.query.direction as string) : 0;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-center">
+          <div className="h-8 w-64 bg-gray-200 rounded mx-auto mb-4"></div>
+          <div className="h-4 w-40 bg-gray-200 rounded mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   const getFirstImage = () => {
     const imgMatch = study.content.match(/!\[.*?\]\((.*?)\)/);
@@ -378,78 +422,53 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
             </div>
           </div>
         </div>
+        {/* Add a small debug indicator for development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fixed bottom-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 z-50">
+            SSR: {new Date(lastGenerated).toISOString().split('T')[1].slice(0, 8)}
+          </div>
+        )}
       </motion.div>
       <Footer />
     </>
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const files = fs.readdirSync(path.join('content/case-studies'));
-  
-  const paths = files.map(filename => ({
-    params: {
-      slug: filename.replace('.md', ''),
-    },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
   const { slug } = params as { slug: string };
   
-  // Get all case studies
-  const files = fs.readdirSync(path.join('content/case-studies'));
-  const caseStudies = files.map(filename => {
-    const currentSlug = filename.replace('.md', '');
-    const markdownWithMeta = fs.readFileSync(
-      path.join('content/case-studies', filename),
-      'utf-8'
-    );
+  // Set caching headers for performance optimization
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  );
+
+  try {
+    // Get case study
+    const study = await getCaseStudyBySlug(slug);
     
-    const { data, content } = matter(markdownWithMeta);
+    if (!study) {
+      return {
+        notFound: true,
+      };
+    }
     
+    // Get adjacent case studies
+    const { nextStudy, prevStudy } = await getAdjacentCaseStudies(slug);
+
     return {
-      slug: currentSlug,
-      ...data,
-      content,
+      props: {
+        study,
+        nextStudy,
+        prevStudy,
+        lastGenerated: new Date().toISOString(),
+      },
     };
-  });
-
-  // Find current, next and previous studies
-  const currentIndex = caseStudies.findIndex(s => s.slug === slug);
-  const study = caseStudies[currentIndex];
-  
-  // Only set next/prev if they exist
-  const nextStudy = currentIndex < caseStudies.length - 1 ? caseStudies[currentIndex + 1] : null;
-  const prevStudy = currentIndex > 0 ? caseStudies[currentIndex - 1] : null;
-
-  if (!study) {
+  } catch (error) {
+    console.error(`Error loading case study [${slug}]:`, error);
+    
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      study,
-      nextStudy,
-      prevStudy,
-    },
-  };
-};
-
-interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  children?: React.ReactNode;
-}
-
-const extractTextContent = (children: React.ReactNode): string => {
-  if (typeof children === 'string') return children;
-  if (Array.isArray(children)) return children.map(extractTextContent).join('');
-  if (React.isValidElement(children)) return extractTextContent(children.props.children);
-  return '';
 };
