@@ -22,7 +22,7 @@ interface HomeProps {
   caseStudies: CaseStudy[];
 }
 
-const ParentComponent = ({ caseStudies }) => {
+const ParentComponent = ({ caseStudies }: { caseStudies: CaseStudy[] }) => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const handleExpand = (index: number) => {
@@ -102,7 +102,7 @@ export default function Home({ caseStudies }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const files = fs.readdirSync(path.join('content/case-studies'));
-  const caseStudies = files.map(filename => {
+  const caseStudies = files.map((filename: string) => {
       const slug = filename.replace('.md', '');
       const markdownWithMeta = fs.readFileSync(path.join('content/case-studies', filename), 'utf-8');
       const { data } = matter(markdownWithMeta);
