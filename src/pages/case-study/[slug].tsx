@@ -6,6 +6,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import ReactMarkdown from 'react-markdown';
 import Footer from '../components/footer';
+import SEO from '../components/SEO';
 import { ArrowLeft, HomeIcon, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, useRef, memo } from 'react';
@@ -334,8 +335,20 @@ export default function CaseStudy({ study, nextStudy, prevStudy }: CaseStudyProp
 
   const direction = parseInt(router.query.direction as string) || 0;
 
+  const getFirstImage = () => {
+    const imgMatch = study.content.match(/!\[.*?\]\((.*?)\)/);
+    return imgMatch ? imgMatch[1] : '/assets/images/og-image.png';
+  };
+
   return (
     <>
+      <SEO 
+        title={`${study.title} | Leonard Lim`}
+        description={study.description || ''}
+        image={getFirstImage()}
+        article={true}
+      />
+      
       <motion.div
         key={router.asPath}
         custom={direction}

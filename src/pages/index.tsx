@@ -1,3 +1,4 @@
+// src/pages/index.tsx
 import { motion } from 'motion/react';
 import { GetStaticProps } from 'next';
 import fs from 'fs';
@@ -7,6 +8,7 @@ import Footer from './components/footer';
 import CaseStudyCard from './components/case-study-card';
 import { useState, useRef } from 'react';
 import "@fontsource-variable/jetbrains-mono";
+import SEO from './components/SEO'; // Import the SEO component
 
 // Types
 interface CaseStudy {
@@ -55,39 +57,47 @@ export default function Home({ caseStudies }: HomeProps) {
   const caseStudiesRef = useRef<HTMLElement>(null);
 
   return (
-    <div ref={containerRef} className="relative">
-      <main className="min-h-screen relative overflow-x-hidden">        
-        <div
-          className="fixed inset-0 w-full h-full -z-10"
-          style={{
-            background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
-          }}
-        />
-        <div className="relative z-10">
-          {/* Landing Section */}
-          <motion.section 
-            id="intro"
-            ref={introRef}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mt-32 mb-32 lg:py-24 max-w-4xl mx-auto flex items-center justify-center"
-          >
-            <h1 className="p-8 text-2xl lg:text-4xl font-bold leading-relaxed uppercase">
-            I transform abstract possibilities into business-validated digital products, seamlessly blending intuitive user experiences with intelligent technology that navigates complexity.
-            </h1>
-          </motion.section>
+    <>
+      {/* Add SEO Component with homepage specific meta info */}
+      <SEO 
+        title="Leonard Lim | AI Experience Designer" 
+        description="I transform abstract possibilities into business-validated digital products, seamlessly blending intuitive user experiences with intelligent technology that navigates complexity."
+      />
+      
+      <div ref={containerRef} className="relative">
+        <main className="min-h-screen relative overflow-x-hidden">        
+          <div
+            className="fixed inset-0 w-full h-full -z-10"
+            style={{
+              background: 'linear-gradient(to bottom right, #f8f9fa, #e9ecef, #a9b6c2)'
+            }}
+          />
+          <div className="relative z-10">
+            {/* Landing Section */}
+            <motion.section 
+              id="intro"
+              ref={introRef}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mt-32 mb-32 lg:py-24 max-w-4xl mx-auto flex items-center justify-center"
+            >
+              <h1 className="p-8 text-2xl lg:text-4xl font-bold leading-relaxed uppercase">
+              I transform abstract possibilities into business-validated digital products, seamlessly blending intuitive user experiences with intelligent technology that navigates complexity.
+              </h1>
+            </motion.section>
 
-          {/* Case Studies Section */}
-          <section id="case-studies" ref={caseStudiesRef} className="p-8 py-32 max-w-4xl mx-auto">
-            <span className="px-4 py-2 mb-4 w-fit border border-current block uppercase text-xs font-bold">Featured Work</span>
-            <ParentComponent caseStudies={caseStudies} /> 
-          </section>
+            {/* Case Studies Section */}
+            <section id="case-studies" ref={caseStudiesRef} className="p-8 py-32 max-w-4xl mx-auto">
+              <span className="px-4 py-2 mb-4 w-fit border border-current block uppercase text-xs font-bold">Featured Work</span>
+              <ParentComponent caseStudies={caseStudies} /> 
+            </section>
 
-          <Footer />
-        </div>
-      </main>
-    </div>
+            <Footer />
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
 
