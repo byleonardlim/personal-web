@@ -176,16 +176,15 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
       const isNotesSection = headingText.toLowerCase().includes('notes');
       
       if (isNotesSection) {
-        // Using type assertion to make sure TypeScript knows this is a NotesSection
         notesSection = {
-          type: 'notes' as const,
+          type: 'notes',
           heading: headingText,
           content: sectionContent,
           index
         };
       } else {
         mainSections.push({
-          type: 'section' as const,
+          type: 'section',
           heading: headingText,
           content: sectionContent,
           index
