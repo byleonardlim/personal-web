@@ -1,10 +1,5 @@
 /* eslint-disable react/display-name */
-declare namespace JSX {
-  interface IntrinsicElements {
-    [elemName: string]: any;
-  }
-}
-
+import React from 'react';
 import { motion, Variants } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
@@ -300,7 +295,7 @@ export default function CaseStudy({
   study, 
   nextStudy, 
   prevStudy 
-}: CaseStudyPageProps): JSX.Element {
+}: CaseStudyPageProps): React.ReactElement {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   
