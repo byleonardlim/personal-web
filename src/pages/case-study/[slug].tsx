@@ -400,15 +400,15 @@ export default function CaseStudy({
         x: dir > 0 ? -1000 : 1000,
         duration: 0.4,
         ease: "power2.in",
-        onComplete: async () => {
-          await router.push({
+        onComplete: () => {
+          router.push({
             pathname: path,
             query: { direction: dir }
           }, path);
         }
       });
     } else {
-      await router.push({
+      router.push({
         pathname: path,
         query: { direction: dir }
       }, path);
