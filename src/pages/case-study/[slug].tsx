@@ -1,5 +1,4 @@
 /* eslint-disable react/display-name */
-import { motion, Variants } from 'motion/react';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import ReactMarkdown from 'react-markdown';
@@ -9,10 +8,11 @@ import SEO from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
 import { useRouter } from 'next/router';
-import React, { useState, useCallback, useEffect, memo } from 'react';
+import React, { useState, useCallback, useEffect, memo, useRef } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 import { ParsedUrlQuery } from 'querystring';
+import gsap from 'gsap';
 
 // Define interfaces for components
 interface SectionedMarkdownProps {
@@ -79,20 +79,43 @@ const MarkdownComponents: Components = {
   ),
   
   li: ({ children }) => {
+    const liRef = useRef<HTMLLIElement>(null);
+    
+    useEffect(() => {
+      if (liRef.current) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              gsap.fromTo(
+                liRef.current,
+                { opacity: 0, x: -200 },
+                { 
+                  opacity: 1, 
+                  x: 0, 
+                  duration: 0.4,
+                  ease: "power2.out"
+                }
+              );
+              observer.disconnect();
+            }
+          });
+        }, { rootMargin: "-100px" });
+        
+        observer.observe(liRef.current);
+        
+        return () => {
+          observer.disconnect();
+        };
+      }
+    }, []);
+    
     return (
-      <motion.li 
-        initial={{ opacity: 0, x: -200 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ 
-          duration: 0.4, 
-          ease: [0.25, 0.1, 0.25, 1.0]
-        }}
+      <li 
+        ref={liRef}
         className="group"
+        style={{ opacity: 0, transform: 'translateX(-200px)' }}
       >
-        <motion.div
-          className="p-4 border border-current transition-all duration-300"
-        >
+        <div className="p-4 border border-current transition-all duration-300">
           <div className="flex items-start">
             <div className="flex-shrink-0 mr-3">
               <Asterisk className="w-4 h-4 text-gray-900" />
@@ -101,8 +124,8 @@ const MarkdownComponents: Components = {
               {children}
             </span>
           </div>
-        </motion.div>
-      </motion.li>
+        </div>
+      </li>
     );
   },
   
@@ -274,21 +297,6 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
 // Define proper types for animations
 type TransitionDirection = number;
 
-interface AnimationVariant {
-  opacity: number;
-  x: number;
-  transition?: {
-    x?: {
-      type: string;
-      stiffness: number;
-      damping: number;
-    };
-    opacity?: {
-      duration: number;
-    };
-  };
-}
-
 // Main CaseStudy component
 export default function CaseStudy({ 
   study, 
@@ -297,6 +305,12 @@ export default function CaseStudy({
 }: CaseStudyPageProps): React.ReactElement {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const mainContentRef = useRef<HTMLDivElement>(null);
+  const backLinkRef = useRef<HTMLDivElement>(null);
+  const pageContentRef = useRef<HTMLDivElement>(null);
+  const direction = typeof router.query.direction === 'string' 
+    ? parseInt(router.query.direction, 10) || 0 // Handle NaN case
+    : 0;
   
   useEffect(() => {
     // Set up router event listeners with proper types
@@ -328,46 +342,74 @@ export default function CaseStudy({
     };
   }, [router.events, router.asPath]); // Add router.asPath to dependency array
   
-  // Page transition variants with proper typing
-  const pageVariants: {
-    initial: (direction: TransitionDirection) => AnimationVariant;
-    animate: AnimationVariant;
-    exit: (direction: TransitionDirection) => AnimationVariant;
-  } = {
-    initial: (direction: TransitionDirection) => ({
-      opacity: 0,
-      x: direction > 0 ? 1000 : -1000
-    }),
-    animate: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 }
+  // Page transition animations
+  useEffect(() => {
+    if (pageContentRef.current) {
+      // Initial position based on direction
+      gsap.set(pageContentRef.current, {
+        opacity: 0,
+        x: direction > 0 ? 1000 : -1000
+      });
+      
+      // Animate in
+      gsap.to(pageContentRef.current, {
+        opacity: 1,
+        x: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      });
+    }
+
+    return () => {
+      if (pageContentRef.current) {
+        // Cleanup animation
+        gsap.killTweensOf(pageContentRef.current);
       }
-    },
-    exit: (direction: TransitionDirection) => ({
-      opacity: 0,
-      x: direction > 0 ? -1000 : 1000,
-      transition: {
-        x: { type: "spring", stiffness: 300, damping: 30 },
-        opacity: { duration: 0.2 }
-      }
-    })
-  };
+    };
+  }, [direction, router.asPath]);
+  
+  // Animate other elements
+  useEffect(() => {
+    if (backLinkRef.current) {
+      gsap.fromTo(
+        backLinkRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, delay: 0.2 }
+      );
+    }
+    
+    if (mainContentRef.current) {
+      gsap.fromTo(
+        mainContentRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6 }
+      );
+    }
+  }, []);
 
   // Navigation handler with direction - properly typed
-  const handleNavigation = useCallback(async (path: string, direction: number): Promise<void> => {
-    await router.push({
-      pathname: path,
-      query: { direction }
-    }, path);
+  const handleNavigation = useCallback(async (path: string, dir: number): Promise<void> => {
+    if (pageContentRef.current) {
+      // Animate out before navigation
+      gsap.to(pageContentRef.current, {
+        opacity: 0,
+        x: dir > 0 ? -1000 : 1000,
+        duration: 0.4,
+        ease: "power2.in",
+        onComplete: async () => {
+          await router.push({
+            pathname: path,
+            query: { direction: dir }
+          }, path);
+        }
+      });
+    } else {
+      await router.push({
+        pathname: path,
+        query: { direction: dir }
+      }, path);
+    }
   }, [router]);
-
-  // Parse direction query parameter with safer type handling
-  const direction = typeof router.query.direction === 'string' 
-    ? parseInt(router.query.direction, 10) || 0 // Handle NaN case
-    : 0;
 
   if (isLoading) {
     return (
@@ -396,41 +438,38 @@ export default function CaseStudy({
         article={true}
       />
 
-      <motion.div
-        key={router.asPath}
-        custom={direction}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={pageVariants as unknown as Variants}
+      <div
+        ref={pageContentRef}
         className="min-h-screen"
       >
         <div className="max-w-6xl mx-auto px-4 lg:px-8 py-20">
           {/* Back to Home Link */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="px-4 py-2 mb-8 w-fit border border-current block uppercase text-xs font-bold"
+          <div
+            ref={backLinkRef}
+            className="px-4 py-2 mb-8 w-fit border border-current block uppercase text-xs font-bold opacity-0"
           >
             <Link 
               href="/"
               className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 transition-colors group"
             >
-              <motion.div
-                whileHover={{ x: -4 }}
+              <div
                 className="flex items-center"
+                onMouseEnter={(e) => {
+                  gsap.to(e.currentTarget, { x: -4, duration: 0.2 });
+                }}
+                onMouseLeave={(e) => {
+                  gsap.to(e.currentTarget, { x: 0, duration: 0.2 });
+                }}
               >
                 <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
-              </motion.div>
+              </div>
               Back
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <div
+            ref={mainContentRef}
+            style={{ opacity: 0, transform: 'translateY(20px)' }}
           >
             <div className="pb-4">
               <h1 className="text-2xl lg:text-4xl font-bold leading-relaxed uppercase">{study.title}</h1>
@@ -438,7 +477,7 @@ export default function CaseStudy({
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
             </div>
-          </motion.div>
+          </div>
 
           <div className="mt-16 flex justify-between">
             <div>
@@ -447,12 +486,17 @@ export default function CaseStudy({
                   onClick={() => handleNavigation(`/case-study/${prevStudy.slug}`, -1)}
                   className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
                 >
-                  <motion.div
-                    whileHover={{ x: -4 }}
+                  <div 
                     className="flex items-left gap-2"
+                    onMouseEnter={(e) => {
+                      gsap.to(e.currentTarget, { x: -4, duration: 0.2 });
+                    }}
+                    onMouseLeave={(e) => {
+                      gsap.to(e.currentTarget, { x: 0, duration: 0.2 });
+                    }}
                   >
                     <MoveLeft className="w-6 h-6" />
-                  </motion.div>
+                  </div>
                   <div className="flex flex-col items-start">
                     <span className="text-xs text-gray-500">Previous</span>
                     <span className="text-sm text-left">{prevStudy.title}</span>
@@ -471,18 +515,23 @@ export default function CaseStudy({
                     <span className="text-xs text-gray-500">Next</span>
                     <span className="text-sm truncate">{nextStudy.title}</span>
                   </div>
-                  <motion.div
-                    whileHover={{ x: 4 }}
+                  <div 
                     className="flex items-center gap-2"
+                    onMouseEnter={(e) => {
+                      gsap.to(e.currentTarget, { x: 4, duration: 0.2 });
+                    }}
+                    onMouseLeave={(e) => {
+                      gsap.to(e.currentTarget, { x: 0, duration: 0.2 });
+                    }}
                   >
                     <MoveRight className="w-6 h-6" />
-                  </motion.div>
+                  </div>
                 </button>
               )}
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
       <Footer />
     </>
   );

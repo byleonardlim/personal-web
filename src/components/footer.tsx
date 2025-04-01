@@ -1,15 +1,31 @@
-import { motion } from 'motion/react';
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
 
 interface FooterProps {
   id?: string;
 }
 
 export default function Footer({ id }: FooterProps) {
+  const footerRef = useRef<HTMLElement>(null);
+  
+  useEffect(() => {
+    if (footerRef.current) {
+      gsap.fromTo(
+        footerRef.current,
+        { opacity: 0 },
+        { 
+          opacity: 1, 
+          duration: 0.6,
+          ease: "power1.out"
+        }
+      );
+    }
+  }, []);
+
   return (
-    <motion.footer 
+    <footer 
       id={id}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      ref={footerRef}
       className="border-t-1 border-gray-400 text-gray-900 py-12"
     >
       <div className="max-w-4xl mx-auto p-8">
@@ -18,6 +34,6 @@ export default function Footer({ id }: FooterProps) {
           <a href="https://linkedin.com/in/byleonardlim" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Connect on LinkedIn</a>
         </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 }

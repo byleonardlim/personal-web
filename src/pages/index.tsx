@@ -1,12 +1,12 @@
 // src/pages/index.tsx
-import { motion } from 'motion/react';
 import { GetStaticProps } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Footer from '@/components/footer';
 import CaseStudyCard from '@/components/case-study-card';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import gsap from 'gsap';
 import "@fontsource-variable/jetbrains-mono";
 import SEO from '@/components/SEO';
 
@@ -55,6 +55,22 @@ export default function Home({ caseStudies }: HomeProps) {
   const introRef = useRef<HTMLElement>(null);
   const caseStudiesRef = useRef<HTMLElement>(null);
 
+  // Animation effect for intro section
+  useEffect(() => {
+    if (introRef.current) {
+      gsap.fromTo(
+        introRef.current,
+        { opacity: 0, y: 20 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6,
+          ease: "power2.out" 
+        }
+      );
+    }
+  }, []);
+
   return (
     <>
       {/* Add SEO Component with homepage specific meta info */}
@@ -67,18 +83,15 @@ export default function Home({ caseStudies }: HomeProps) {
         <main className="min-h-screen relative overflow-x-hidden">        
           <div className="relative z-10">
             {/* Landing Section */}
-            <motion.section 
+            <section 
               id="intro"
               ref={introRef}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
               className="mt-32 mb-32 lg:py-24 max-w-4xl mx-auto flex items-center justify-center"
             >
               <h1 className="p-8 text-2xl lg:text-4xl font-bold leading-relaxed uppercase">
               I transform abstract possibilities into business-validated digital products, seamlessly blending intuitive user experiences with intelligent technology that navigates complexity.
               </h1>
-            </motion.section>
+            </section>
 
             {/* Case Studies Section */}
             <section id="case-studies" ref={caseStudiesRef} className="p-8 py-32 max-w-4xl mx-auto">
