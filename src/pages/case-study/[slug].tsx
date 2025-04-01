@@ -39,6 +39,58 @@ interface MarkdownImageProps {
   alt?: string;
 }
 
+// List item as a proper React component
+const AnimatedListItem: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  const liRef = useRef<HTMLLIElement>(null);
+  
+  useEffect(() => {
+    if (liRef.current) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            gsap.fromTo(
+              liRef.current,
+              { opacity: 0, x: -200 },
+              { 
+                opacity: 1, 
+                x: 0, 
+                duration: 0.4,
+                ease: "power2.out"
+              }
+            );
+            observer.disconnect();
+          }
+        });
+      }, { rootMargin: "-100px" });
+      
+      observer.observe(liRef.current);
+      
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
+  
+  return (
+    <li 
+      ref={liRef}
+      className="group"
+      style={{ opacity: 0, transform: 'translateX(-200px)' }}
+    >
+      <div className="p-4 border border-current transition-all duration-300">
+        <div className="flex items-start">
+          <div className="flex-shrink-0 mr-3">
+            <Asterisk className="w-4 h-4 text-gray-900" />
+          </div>
+          <span className="text-sm">
+            {children}
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+};
+
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
   return (
@@ -78,56 +130,7 @@ const MarkdownComponents: Components = {
     </ul>
   ),
   
-  li: ({ children }) => {
-    const liRef = useRef<HTMLLIElement>(null);
-    
-    useEffect(() => {
-      if (liRef.current) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              gsap.fromTo(
-                liRef.current,
-                { opacity: 0, x: -200 },
-                { 
-                  opacity: 1, 
-                  x: 0, 
-                  duration: 0.4,
-                  ease: "power2.out"
-                }
-              );
-              observer.disconnect();
-            }
-          });
-        }, { rootMargin: "-100px" });
-        
-        observer.observe(liRef.current);
-        
-        return () => {
-          observer.disconnect();
-        };
-      }
-    }, []);
-    
-    return (
-      <li 
-        ref={liRef}
-        className="group"
-        style={{ opacity: 0, transform: 'translateX(-200px)' }}
-      >
-        <div className="p-4 border border-current transition-all duration-300">
-          <div className="flex items-start">
-            <div className="flex-shrink-0 mr-3">
-              <Asterisk className="w-4 h-4 text-gray-900" />
-            </div>
-            <span className="text-sm">
-              {children}
-            </span>
-          </div>
-        </div>
-      </li>
-    );
-  },
+  li: ({ children }) => <AnimatedListItem>{children}</AnimatedListItem>,
   
   ol: ({ children }) => (
     <ol className="list-decimal list-inside my-4 leading-relaxed">
@@ -294,9 +297,6 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
   }
 };
 
-// Define proper types for animations
-type TransitionDirection = number;
-
 // Main CaseStudy component
 export default function CaseStudy({ 
   study, 
@@ -361,9 +361,11 @@ export default function CaseStudy({
     }
 
     return () => {
-      if (pageContentRef.current) {
+      // Store ref in variable to avoid the warning
+      const currentRef = pageContentRef.current;
+      if (currentRef) {
         // Cleanup animation
-        gsap.killTweensOf(pageContentRef.current);
+        gsap.killTweensOf(currentRef);
       }
     };
   }, [direction, router.asPath]);
@@ -387,11 +389,13 @@ export default function CaseStudy({
     }
   }, []);
 
-  // Navigation handler with direction - properly typed
+  // Navigation handler with direction
   const handleNavigation = useCallback(async (path: string, dir: number): Promise<void> => {
     if (pageContentRef.current) {
+      // Store ref in variable
+      const currentRef = pageContentRef.current;
       // Animate out before navigation
-      gsap.to(pageContentRef.current, {
+      gsap.to(currentRef, {
         opacity: 0,
         x: dir > 0 ? -1000 : 1000,
         duration: 0.4,
