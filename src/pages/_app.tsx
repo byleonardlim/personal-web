@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />;
-      <GoogleAnalytics gtmId="G-GE1KE7MRW9" />
+      <GoogleAnalytics gaId="G-GE1KE7MRW9" />
     </>
   ) 
   
