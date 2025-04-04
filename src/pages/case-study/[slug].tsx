@@ -356,7 +356,13 @@ export default function CaseStudy({
         opacity: 1,
         x: 0,
         duration: 0.5,
-        ease: "power2.out"
+        ease: "power2.out",
+        onComplete: () => {
+          // Ensure opacity is set to 1 after animation completes
+          if (pageContentRef.current) {
+            gsap.set(pageContentRef.current, { opacity: 1 });
+          }
+        }
       });
     }
 
@@ -389,7 +395,7 @@ export default function CaseStudy({
     }
   }, []);
 
-  // Navigation handler with direction
+  // FIX: Navigation handler with direction to ensure proper opacity management
   const handleNavigation = useCallback(async (path: string, dir: number): Promise<void> => {
     if (pageContentRef.current) {
       // Store ref in variable
@@ -473,7 +479,6 @@ export default function CaseStudy({
 
           <div
             ref={mainContentRef}
-            style={{ opacity: 0, transform: 'translateY(20px)' }}
           >
             <div className="pb-4">
               <h1 className="text-2xl lg:text-4xl font-bold leading-relaxed uppercase">{study.title}</h1>
