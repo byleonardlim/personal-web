@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagmanager } from "@next/third-parties/google"; 
 
 interface SEOProps {
   title?: string;
@@ -43,7 +43,7 @@ export default function SEO({
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="robots" content="index, follow" />
 
-      <GoogleAnalytics gaId="G-GE1KE7MRW9" />
+      <GoogleTagmanager gtmId="G-GE1KE7MRW9" />
     </Head>
   );
 }
