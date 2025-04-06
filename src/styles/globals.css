@@ -5,11 +5,7 @@
 :root {
   --background: #f8f8f8;
   --foreground: #262626;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --limonana: #1CD864;
 }
 
 body {

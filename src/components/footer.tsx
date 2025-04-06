@@ -26,7 +26,7 @@ export default function Footer({ id }: FooterProps) {
     <footer 
       id={id}
       ref={footerRef}
-      className="border-t-1 border-stone-300 bg-gray-800 py-2"
+      className="border-t-1 border-stone-300 bg-(--limonana) py-2"
     >
     </footer>
   );
