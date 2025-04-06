@@ -3,11 +3,9 @@ import { GetStaticProps } from 'next';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import Footer from '@/components/footer';
 import CaseStudyCard from '@/components/case-study-card';
 import { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import "@fontsource-variable/jetbrains-mono";
 import SEO from '@/components/SEO';
 
 // Types
@@ -88,18 +86,16 @@ export default function Home({ caseStudies }: HomeProps) {
               ref={introRef}
               className="mt-32 mb-32 lg:py-24 max-w-4xl mx-auto flex items-center justify-center"
             >
-              <h1 className="p-8 text-2xl lg:text-4xl font-bold leading-relaxed uppercase">
+              <h1 className="p-8 text-2xl lg:text-4xl font-bold leading-relaxed">
               I transform abstract possibilities into business-validated digital products, seamlessly blending intuitive user experiences with intelligent technology that navigates complexity.
               </h1>
             </section>
 
             {/* Case Studies Section */}
             <section id="case-studies" ref={caseStudiesRef} className="p-8 py-32 max-w-4xl mx-auto">
-              <span className="px-4 py-2 mb-4 w-fit border border-current block uppercase text-xs font-bold">Featured Work</span>
+              <span className="mb-4 w-fit block uppercase text-xs font-bold">Featured Work</span>
               <ParentComponent caseStudies={caseStudies} /> 
             </section>
-
-            <Footer />
           </div>
         </main>
       </div>

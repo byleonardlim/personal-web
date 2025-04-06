@@ -78,8 +78,8 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
     }, [isExpanded]);
 
     const cardClassName = useMemo(() => {
-        return `p-4 lg:p-8 border border-current cursor-pointer transition-all duration-300 ${
-            isExpanded ? ' border-none bg-gradient-to-r from-purple-100 via-blue-70 to-pink-50 drop-shadow-2xl' : ''
+        return `border border-stone-200 cursor-pointer transition-all duration-300 ${
+            isExpanded ? 'border-b-4 border-b-stone-900' : ''
         }`;
     }, [isExpanded]);
 
@@ -94,15 +94,15 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
                 onMouseLeave={handleHover}
                 onClick={handleTap}
             >
-                <div className="flex flex-col items-start">
-                    <div className="flex items-center">
+                <div className="p-8 flex flex-col items-start">
+                    <h2 className="max-w-2xl flex items-center text-xl lg:text-2xl font-bold ">
                         <Link 
                             href={`/case-study/${study.slug}`}
-                            className="text-lg lg:text-xl font-bold transition-colors">
+                            className="transition-colors">
                             {study.title}
                             <ArrowUpRight className="ml-4 inline-block w-6 h-6" />
                         </Link>
-                    </div>
+                    </h2>
                     <div
                         ref={contentRef}
                         className="overflow-hidden"
@@ -112,7 +112,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
                         }}
                     >
                         {isExpanded && (
-                            <p className="mt-6 mb-8 text-md text-gray-700">{study.description}</p>
+                            <p className="mt-8">{study.description}</p>
                         )}
                     </div>
                 </div>

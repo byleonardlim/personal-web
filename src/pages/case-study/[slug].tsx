@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import ReactMarkdown from 'react-markdown';
 import { Components } from 'react-markdown';
-import Footer from '@/components/footer';
 import SEO from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
 import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
@@ -74,15 +73,15 @@ const AnimatedListItem: React.FC<{children: React.ReactNode}> = ({ children }) =
   return (
     <li 
       ref={liRef}
-      className="group"
-      style={{ opacity: 0, transform: 'translateX(-200px)' }}
+      className="group border border-stone-300 "
+      style={{ opacity: 0, transform: 'translatex(-200px)' }}
     >
-      <div className="p-4 border border-current transition-all duration-300">
-        <div className="flex items-start">
-          <div className="flex-shrink-0 mr-3">
-            <Asterisk className="w-4 h-4 text-gray-900" />
+      <div className="p-6 lg:p-8 transition-all duration-300">
+        <div className="flex items-center space-x-4">
+          <div className="flex-shrink-0">
+            <Asterisk className="w-4 h-4" />
           </div>
-          <span className="text-sm">
+          <span className="text-sm leading-relaxed">
             {children}
           </span>
         </div>
@@ -94,7 +93,7 @@ const AnimatedListItem: React.FC<{children: React.ReactNode}> = ({ children }) =
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
   return (
-    <figure className="w-full lg:my-12 rounded-lg border border-gray-200 bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
+    <figure className="w-full lg:my-12 rounded-xs bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
       {/* Image container with optimized Next.js Image */}
       <div className="relative z-10">
         <OptimizedImage 
@@ -113,13 +112,13 @@ const MarkdownComponents: Components = {
     src ? <MarkdownImage src={src} alt={alt} /> : null,
   
   h3: ({ children }) => (
-    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed bg-gradient-to-r from-[#a9b6c2] to-white bg-clip-text text-transparent">
+    <h3 className="text-xl font-bold mt-6 mb-3 leading-relaxed">
       {children}
     </h3>
   ),
 
   p: ({ children }) => (
-    <div className="text-gray-600 text-md leading-relaxed mb-4">
+    <div className="leading-relaxed mb-4">
       {children}
     </div>
   ),
@@ -150,7 +149,7 @@ const MarkdownComponents: Components = {
   ),
 
   blockquote: ({ children }) => (
-    <blockquote className="bg-gray-100 border-l-4 border-gray-300 p-4 my-4 text-xl italic">
+    <blockquote className="border-l-4 border-l-stone-900 px-8 my-16 text-lg font-bold">
       {children}
     </blockquote>
   ),
@@ -244,11 +243,11 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
                 );
               } else {
                 return (
-                  <section key={`section-${section.index}`} className="mb-8">
-                    <h2 className="text-lg font-bold mb-4 uppercase">
+                  <section key={`section-${section.index}`} className="mb-16">
+                    <h2 className="text-lg font-bold">
                       {section.heading}
                     </h2>
-                    <div className="text-md leading-relaxed">
+                    <div className="text-md leading-8">
                       <ReactMarkdown components={MarkdownComponents}>
                         {section.content}
                       </ReactMarkdown>
@@ -259,7 +258,7 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
             })
           ) : (
             // Fallback if no sections are found
-            <div className="mb-8">
+            <div className="mb-16">
               <ReactMarkdown components={MarkdownComponents}>
                 {content}
               </ReactMarkdown>
@@ -270,8 +269,8 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
         {/* Notes column (sticky) */}
         {notesSection && (
           <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
-            <div className="sticky lg:top-8 border border-gray-100 lg:rounded-lg p-6 bg-gray-50">
-              <h2 className="text-lg font-bold mb-4 uppercase">
+            <div className="sticky lg:top-8 border border-stone-300 lg:rounded-lg p-6">
+              <h2 className="text-lg font-bold mb-4">
                 {(notesSection as NotesSection).heading}
               </h2>
               <div className="text-sm text-gray-600 leading-relaxed">
@@ -452,11 +451,11 @@ export default function CaseStudy({
         ref={pageContentRef}
         className="min-h-screen"
       >
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 py-20">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 my-8">
           {/* Back to Home Link */}
           <div
             ref={backLinkRef}
-            className="px-4 py-2 mb-8 w-fit border border-current block uppercase text-xs font-bold opacity-0"
+            className="px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold"
           >
             <Link 
               href="/"
@@ -473,7 +472,7 @@ export default function CaseStudy({
               >
                 <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
               </div>
-              Back
+                Return
             </Link>
           </div>
 
@@ -481,7 +480,7 @@ export default function CaseStudy({
             ref={mainContentRef}
           >
             <div className="pb-4">
-              <h1 className="text-2xl lg:text-4xl font-bold leading-relaxed uppercase">{study.title}</h1>
+              <h1 className="text-2xl lg:text-4xl font-bold">{study.title}</h1>
             </div>
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
@@ -541,7 +540,6 @@ export default function CaseStudy({
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }

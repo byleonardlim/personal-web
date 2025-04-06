@@ -27,7 +27,7 @@ As engagements balloon with data, this mental mapping becomes unsustainable. Wha
 ## Acheive The First 40% in Minutes
 The solution leverages advanced natural language processing to analyze thousands of pages of audit evidence, automatically extracting key findings while maintaining links to source documents throughout the process. This isn't just a search function—it's a comprehensive knowledge layer that understands audit contexts and relationships.
 
-> "I used to spend entire afternoons just gathering material for a single section, now I complete full first drafts before lunch, with available issues properly backed and traceable." — Allison.
+> I used to spend entire afternoons just gathering material for a single section, now I complete full first drafts before lunch, with available issues properly backed and traceable. — Allison
 
 Here's how it works for Allison:
 
@@ -49,7 +49,7 @@ The impact has been substantial and measurable after a limited beta testing:
 ## Scaling Up
 While the solution initially targeted risk auditors, its success has accelerated adoption plans across the organization. Our implementation roadmap now includes:
 
-- External auditor (Q4 2025)
+- External auditors (Q4 2025)
 - Internal auditors (Q2 2026)
 
 Each new domain requires specialized training data and domain-specific citation models developed collaboratively with subject matter experts, incorporating prior years' documents to train the model for a broader audience.
