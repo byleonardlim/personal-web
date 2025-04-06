@@ -269,7 +269,7 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
         {/* Notes column (sticky) */}
         {notesSection && (
           <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
-            <div className="sticky lg:top-8 border border-stone-300 lg:rounded-lg p-6">
+            <div className="sticky p-6 lg:top-8 border border-stone-300 rounded-xs">
               <h2 className="text-lg font-bold mb-4">
                 {(notesSection as NotesSection).heading}
               </h2>
@@ -452,7 +452,7 @@ export default function CaseStudy({
         className="min-h-screen"
       >
         <div className="max-w-6xl mx-auto px-4 lg:px-8 my-8">
-          {/* Back to Home Link */}
+          {/* Back to Main */}
           <div
             ref={backLinkRef}
             className="px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold"
@@ -492,7 +492,7 @@ export default function CaseStudy({
               {prevStudy && (
                 <button
                   onClick={() => handleNavigation(`/case-study/${prevStudy.slug}`, -1)}
-                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                  className="group flex items-left gap-3 px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold hover:text-gray-600 transition-colors group cursor-pointer"
                 >
                   <div 
                     className="flex items-left gap-2"
@@ -517,11 +517,11 @@ export default function CaseStudy({
               {nextStudy && (
                 <button
                   onClick={() => handleNavigation(`/case-study/${nextStudy.slug}`, 1)}
-                  className="group flex items-left gap-3 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                  className="group flex items-left gap-3 px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold hover:text-gray-600 transition-colors group cursor-pointer"
                 >
                   <div className="flex flex-col items-end">
-                    <span className="text-xs text-gray-500">Next</span>
-                    <span className="text-sm truncate">{nextStudy.title}</span>
+                    <span className="text-gray-400">Next</span>
+                    <span className="truncate">{nextStudy.title}</span>
                   </div>
                   <div 
                     className="flex items-center gap-2"
