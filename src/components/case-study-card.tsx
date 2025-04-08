@@ -79,7 +79,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ study, index, isExpanded,
 
     const cardClassName = useMemo(() => {
         return `border border-stone-200 cursor-pointer transition-all duration-300 ${
-            isExpanded ? 'border-b-4 border-b-stone-900' : ''
+            isExpanded ? 'border-b-4 border-b-(--limonana)' : ''
         }`;
     }, [isExpanded]);
 

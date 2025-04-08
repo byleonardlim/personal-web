@@ -102,6 +102,7 @@ const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
           className="shadow-lg"
         />
       </div>
+      <span className="mt-6 px-2 text-xs font-bold text-right text-stone-600 block">{ alt }</span>
     </figure>
   );
 });
