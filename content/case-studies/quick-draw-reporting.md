@@ -2,15 +2,17 @@
 title: "Quick-Draw Reporting: From Raw Data to Readable in Record Time"
 description: "Dive into Allison's journey from report-writing drudgery to deadline-crushing confidence, as smart tools transform audit findings into client-ready gold."
 ---
+![Breakdown of a issue point raised](/assets/images/case-studies/quick-draw-reporting/breakdown.png)
+
 ## Notes
 The Allison in this story is fictional, but her challenges are real. As an independent contributor AI Experience Designer in the product team, I've designed the solution using generative technology that transforms how auditors compile reports.
 
 Mock data replaces actual information to safeguard confidentiality. The value delivered to audit teams is 100% authentic.
 
-![Breakdown of a issue point raised](/assets/images/case-studies/quick-draw-reporting/breakdown.png)
-
 ## Designing for Tomorrow
+
 ![Reverse double diamond, where we start by exploring](/assets/images/case-studies/quick-draw-reporting/double-diamond-r.jpg)
+
 While working with emerging technology in digital product design, the narrative of design thinking changed. It lacks clarity of what the actual user wants, since the understanding of the new technology isn't well communicated to them.
 
 Instead of asking, we provide first. We engaged with a small group of dedicated users whom we proactively worked with during the proof-of-concept development by understanding the following (in sequence):
