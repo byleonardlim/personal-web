@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Components } from 'react-markdown';
 import SEO from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import { ArrowLeft, MoveLeft, MoveRight, Asterisk } from 'lucide-react';
+import { ArrowLeft, MoveLeft, MoveRight, Asterisk, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo, useRef } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
@@ -37,6 +37,102 @@ interface MarkdownImageProps {
   src: string;
   alt?: string;
 }
+
+// Quick Read component for case study summary
+interface QuickReadProps {
+  content: string;
+}
+
+const QuickRead: React.FC<QuickReadProps> = ({ content }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Extract Quick Read section from markdown content
+  const extractQuickReadSection = (markdown: string): string | null => {
+    // Look for a section starting with "## Quick Read" heading
+    const quickReadRegex = /## Quick Read\s*([\s\S]*?)(?=\s*\n## |$)/;
+    const match = markdown.match(quickReadRegex);
+    
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+    
+    return null;
+  };
+
+  const quickReadContent = extractQuickReadSection(content);
+
+  // Important: Use all hooks before any conditional returns
+  useEffect(() => {
+    if (contentRef.current && quickReadContent) {
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: -20 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.5,
+          ease: "power2.out" 
+        }
+      );
+    }
+  }, [quickReadContent]);
+
+  const toggleExpand = () => {
+    if (contentRef.current) {
+      if (isExpanded) {
+        gsap.to(contentRef.current, { 
+          height: 0, 
+          opacity: 0, 
+          duration: 0.3,
+          ease: "power1.in",
+          onComplete: () => setIsExpanded(false)
+        });
+      } else {
+        setIsExpanded(true);
+        gsap.to(contentRef.current, { 
+          height: "auto", 
+          opacity: 1, 
+          duration: 0.3,
+          ease: "power1.out" 
+        });
+      }
+    }
+  };
+
+  // Return null after all hooks have been called
+  if (!quickReadContent) {
+    return null;
+  }
+
+  return (
+    <div className="border border-stone-200 rounded-xs my-6 overflow-hidden bg-gradient-to-r from-gray-50 via-blue-50 to-indigo-50">
+      <div className="flex justify-between items-center p-4 cursor-pointer backdrop-blur-sm" onClick={toggleExpand}>
+        <div className="flex items-center gap-2">
+          <Clock className="w-4 h-4 text-indigo-500" />
+          <h3 className="font-bold text-sm uppercase text-gray-700">Quick Read</h3>
+        </div>
+        <button className="text-indigo-500 hover:text-indigo-700 transition-colors">
+          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </button>
+      </div>
+      
+      <div 
+        ref={contentRef}
+        className={`px-4 pb-4 text-gray-700 leading-relaxed`}
+        style={{ 
+          height: isExpanded ? "auto" : 0,
+          opacity: isExpanded ? 1 : 0,
+          overflow: "hidden"
+        }}
+      >
+        <ReactMarkdown components={MarkdownComponents}>
+          {quickReadContent}
+        </ReactMarkdown>
+      </div>
+    </div>
+  );
+};
 
 // List item as a proper React component
 const AnimatedListItem: React.FC<{children: React.ReactNode}> = ({ children }) => {
@@ -208,6 +304,11 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
       const headingText = headingMatch?.[1]?.trim() || 'Untitled Section';
       const sectionContent = section.replace(/^## .*?$/m, '').trim();
       
+      // Skip Quick Read section as it's displayed separately
+      if (headingText.toLowerCase() === 'quick read') {
+        return;
+      }
+      
       // Check if it's a notes section
       const isNotesSection = headingText.toLowerCase().includes('notes');
       
@@ -269,7 +370,7 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
         
         {/* Notes column (sticky) */}
         {notesSection && (
-          <div className="lg:w-1/3 lg:my-12 order-first lg:order-last">
+          <div className="lg:w-1/3 order-first lg:order-last">
             <div className="sticky p-6 lg:top-8 border border-stone-300 rounded-xs">
               <h2 className="text-lg font-bold mb-4">
                 {(notesSection as NotesSection).heading}
@@ -482,6 +583,11 @@ export default function CaseStudy({
           >
             <div className="pb-4">
               <h1 className="text-2xl lg:text-4xl font-bold">{study.title}</h1>
+              
+              {/* Quick Read Section */}
+              {study.content && (
+                <QuickRead content={study.content} />
+              )}
             </div>
             <div className="text-lg">
               <SectionedMarkdown content={study.content} />
@@ -507,8 +613,8 @@ export default function CaseStudy({
                     <MoveLeft className="w-6 h-6" />
                   </div>
                   <div className="flex flex-col items-start">
-                    <span className="text-xs text-gray-500">Previous</span>
-                    <span className="text-sm text-left">{prevStudy.title}</span>
+                    <span className="text-gray-400">Previous</span>
+                    <span className="truncate text-left">{prevStudy.title}</span>
                   </div>
                 </button>
               )}

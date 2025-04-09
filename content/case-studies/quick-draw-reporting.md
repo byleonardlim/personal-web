@@ -2,41 +2,18 @@
 title: "Quick-Draw Reporting: From Raw Data to Readable in Record Time"
 description: "Dive into Allison's journey from report-writing drudgery to deadline-crushing confidence, as smart tools transform audit findings into client-ready gold."
 ---
-![Breakdown of a issue point raised](/assets/images/case-studies/quick-draw-reporting/breakdown.png)
+## Quick Read
+
+This case study showcases how an AI-powered solution transformed audit reporting from a time-consuming struggle to an efficient process. It follows fictional auditor Allison, who previously battled with scattered information across platforms, tedious evidence gathering, and laborious citation tracking. 
+
+The product team built a generative AI tool that automatically analyzes thousands of pages of audit evidence, extracts key findings, and maintains source document links throughout the process. Implemented as a Microsoft Word plugin, the solution reduced report compilation time by 80%, decreased citation errors by 70%, and doubled the speed of identifying issues—demonstrating how thoughtfully designed AI can solve real professional pain points while delivering substantial business value.
 
 ## Notes
 The Allison in this story is fictional, but her challenges are real. As an independent contributor AI Experience Designer in the product team, I've designed the solution using generative technology that transforms how auditors compile reports.
 
 Mock data replaces actual information to safeguard confidentiality. The value delivered to audit teams is 100% authentic.
 
-## Designing for Tomorrow
-
-![Reverse double diamond, where we start by exploring](/assets/images/case-studies/quick-draw-reporting/double-diamond-r.jpg)
-
-While working with emerging technology in digital product design, the narrative of design thinking changed. It lacks clarity of what the actual user wants, since the understanding of the new technology isn't well communicated to them.
-
-Instead of asking, we provide first. We engaged with a small group of dedicated users whom we proactively worked with during the proof-of-concept development by understanding the following (in sequence):
-
-- Current journey on how they conduct their audit processes
-- Friction and challenges faced within the processes
-- How AI/ML could help elevate the existing processes
-- Ways to trigger the AI-centric actions
-
-![Domain knowledge discovery](/assets/images/case-studies/quick-draw-reporting/domain-knowledge.png)
-
-## Research By Doing
-
-> It takes an equal contribution from both design and technology to achieve a good product experience for AI.
-
-To overcome the anxiety of a new user paradigm, we build early, understanding the constraints and feasibility from both usability and technology stack. The team built a good enough proof-of-concept to showcase the capability and overall product experience on how the AI is assisting the auditors with document generation.
-
-We conducted numerous feedback sessions to understand how they are doing with our early-stage solution and way to improve both the experience and efficiency of the Generative AI model.
-
-![NPS from the beta testers](/assets/images/case-studies/quick-draw-reporting/scoring.png)
-
-The story below is being told through Allison's perspective renders the challenges, the needs, and the solution of the digital product we designed, highlighting the overall product experience.
-
-## Allison's Struggle
+## Meet Allison
 Allison's blank document stares back at her, the cursor blinking like a timer counting down billable hours. "Where should I start gathering all these findings?" she sighs, five minutes into her standoff with an empty draft.
 
 This isn't just Allison's problem. Across audit firms, professionals drown in information scattered across platforms and formats — client details, meeting notes, and evidence documents living in digital diaspora. The struggle continues after completing audit fieldwork, when findings have to be reported back to the client.
@@ -48,7 +25,33 @@ This isn't just Allison's problem. Across audit firms, professionals drown in in
 
 When engagements grow complex, team members must become reference librarians on the fly, pulling precise citations from a digital labyrinth of documents. For each finding, Allison needs to recall exactly which file, which page, which paragraph contains the supporting evidence.
 
-As engagements balloon with data, this mental mapping becomes unsustainable. What should be a simple "here's where we found this" turns into a frustrating treasure hunt through folders and files — the digital equivalent of searching for a specific sentence in a library without an index.
+This mental mapping becomes unsustainable. What should be a simple "here's where we found this" turns into a frustrating treasure hunt through folders and files — the digital equivalent of searching for a specific sentence in a library without an index.
+
+![Breakdown of a issue point raised](/assets/images/case-studies/quick-draw-reporting/breakdown.png)
+
+## Designing for Tomorrow
+To solve Allison's challenges, the product team explored Generative AI as a potential solution. During initial conversations with auditors, we discovered their understanding of emerging technologies rarely extended beyond basic awareness ("I know ChatGPT").
+
+When working with such emerging technologies in digital product design, we found the traditional design thinking narrative needed to shift. Users often struggled to articulate what they wanted from AI because the technology's capabilities weren't well communicated to them. This created a fundamental gap in the typical user research approach – how can users express needs for solutions they don't yet understand?
+
+![Reverse double diamond, where we start by exploring](/assets/images/case-studies/quick-draw-reporting/double-diamond-r.jpg)
+
+The reverse double diamond allows us to deliver first, rather than waiting for complete requirements. We engaged with a small group of dedicated users who worked closely with us during proof-of-concept development. Our process followed this sequence of understanding:
+
+- Current journey on how they conduct their audit processes
+- Friction and challenges faced within these processes
+- How AI/ML could help elevate the existing processes
+- Ways to trigger the AI-centric actions
+
+By starting with delivery and refining through collaboration, we could introduce capabilities users might not have initially requested but that addressed their underlying needs.
+
+![Domain knowledge discovery](/assets/images/case-studies/quick-draw-reporting/domain-knowledge.png)
+
+> It takes an equal contribution from both design and technology to achieve a good product experience for AI.
+
+We conducted numerous feedback sessions to understand how they are doing with our early-stage solution and way to improve both the experience and efficiency of the Generative AI model.
+
+![NPS from the beta testers](/assets/images/case-studies/quick-draw-reporting/scoring.png)
 
 ## Acheive The First 40% in Minutes
 The solution leverages advanced natural language processing to analyze thousands of pages of audit evidence, automatically extracting key findings while maintaining links to source documents throughout the process. This isn't just a search function—it's a comprehensive knowledge layer that understands audit contexts and relationships.
