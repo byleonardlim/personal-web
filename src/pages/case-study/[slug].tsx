@@ -78,53 +78,23 @@ const QuickRead: React.FC<QuickReadProps> = ({ content }) => {
     }
   }, [quickReadContent]);
 
-  const toggleExpand = () => {
-    if (contentRef.current) {
-      if (isExpanded) {
-        gsap.to(contentRef.current, { 
-          height: 0, 
-          opacity: 0, 
-          duration: 0.3,
-          ease: "power1.in",
-          onComplete: () => setIsExpanded(false)
-        });
-      } else {
-        setIsExpanded(true);
-        gsap.to(contentRef.current, { 
-          height: "auto", 
-          opacity: 1, 
-          duration: 0.3,
-          ease: "power1.out" 
-        });
-      }
-    }
-  };
-
   // Return null after all hooks have been called
   if (!quickReadContent) {
     return null;
   }
 
   return (
-    <div className="border border-stone-200 rounded-xs my-6 overflow-hidden bg-gradient-to-r from-gray-50 via-blue-50 to-indigo-50">
-      <div className="flex justify-between items-center p-4 cursor-pointer backdrop-blur-sm" onClick={toggleExpand}>
+    <div className="lg:border border-stone-300 rounded-xs my-6">
+      <div className="lg:p-4 lg:flex lg:justify-between lg:items-center py-4">
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-indigo-500" />
-          <h3 className="font-bold text-sm uppercase text-gray-700">Quick Read</h3>
+          <h3 className="font-bold text-md capitalize text-gray-700">Quick Read</h3>
         </div>
-        <button className="text-indigo-500 hover:text-indigo-700 transition-colors">
-          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </button>
       </div>
       
       <div 
         ref={contentRef}
-        className={`px-4 pb-4 text-gray-700 leading-relaxed`}
-        style={{ 
-          height: isExpanded ? "auto" : 0,
-          opacity: isExpanded ? 1 : 0,
-          overflow: "hidden"
-        }}
+        className={`lg:p-4 text-sm text-gray-600 leading-relaxed`}
       >
         <ReactMarkdown components={MarkdownComponents}>
           {quickReadContent}
@@ -189,7 +159,7 @@ const AnimatedListItem: React.FC<{children: React.ReactNode}> = ({ children }) =
 // Enhanced image component with adaptive sizing based on image dimensions
 const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
   return (
-    <figure className="w-full lg:my-12 rounded-xs bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-8 md:p-16">      
+    <figure className="w-full lg:my-12 rounded-xs bg-[url(/assets/images/universal/gradient-bg.png)] bg-cover p-4 lg:p-16">      
       {/* Image container with optimized Next.js Image */}
       <div className="relative z-10">
         <OptimizedImage 
@@ -198,7 +168,7 @@ const MarkdownImage = memo(({ src, alt }: MarkdownImageProps) => {
           className="shadow-lg"
         />
       </div>
-      <span className="mt-6 px-2 text-xs font-bold text-right text-stone-600 block">{ alt }</span>
+      <span className="mt-6 px-2 text-xs text-center block">{alt}</span>
     </figure>
   );
 });
@@ -337,7 +307,7 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
             mainSections.map((section) => {
               if (section.type === 'intro') {
                 return (
-                  <div key={`intro-${section.index}`} className="mb-8">
+                  <div key={`intro-${section.index}`} className="mb-16">
                     <ReactMarkdown components={MarkdownComponents}>
                       {section.content}
                     </ReactMarkdown>
@@ -346,7 +316,7 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
               } else {
                 return (
                   <section key={`section-${section.index}`} className="mb-16">
-                    <h2 className="text-lg font-bold">
+                    <h2 className="text-2xl font-bold">
                       {section.heading}
                     </h2>
                     <div className="text-md leading-8">
@@ -370,9 +340,9 @@ const SectionedMarkdown: React.FC<SectionedMarkdownProps> = ({ content }) => {
         
         {/* Notes column (sticky) */}
         {notesSection && (
-          <div className="lg:w-1/3 order-first lg:order-last">
-            <div className="sticky p-6 lg:top-8 border border-stone-300 rounded-xs">
-              <h2 className="text-lg font-bold mb-4">
+          <div className="lg:w-1/3 order-first lg:order-last bg-stone-200 lg:bg-transparent">
+            <div className="lg:sticky p-4 lg:p-6 lg:top-8 lg:border border-stone-300 rounded-xs">
+              <h2 className="text-md font-bold mb-4">
                 {(notesSection as NotesSection).heading}
               </h2>
               <div className="text-sm text-gray-600 leading-relaxed">
@@ -554,42 +524,44 @@ export default function CaseStudy({
         className="min-h-screen"
       >
         <div className="max-w-6xl mx-auto px-4 lg:px-8 my-8">
-          {/* Back to Main */}
-          <div
-            ref={backLinkRef}
-            className="px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold"
-          >
-            <Link 
-              href="/"
-              className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 transition-colors group"
-            >
-              <div
-                className="flex items-center"
-                onMouseEnter={(e) => {
-                  gsap.to(e.currentTarget, { x: -4, duration: 0.2 });
-                }}
-                onMouseLeave={(e) => {
-                  gsap.to(e.currentTarget, { x: 0, duration: 0.2 });
-                }}
-              >
-                <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
-              </div>
-                Return
-            </Link>
-          </div>
-
           <div
             ref={mainContentRef}
           >
-            <div className="pb-4">
-              <h1 className="text-2xl lg:text-4xl font-bold">{study.title}</h1>
+            <div className="pb-4 lg:h-screen flex flex-col justify-center">
+              
+              {/* Back to Main */}
+              <div
+                ref={backLinkRef}
+                className="px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold"
+              >
+                <Link 
+                  href="/"
+                  className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-600 transition-colors group"
+                >
+                  <div
+                    className="flex items-center"
+                    onMouseEnter={(e) => {
+                      gsap.to(e.currentTarget, { x: -4, duration: 0.2 });
+                    }}
+                    onMouseLeave={(e) => {
+                      gsap.to(e.currentTarget, { x: 0, duration: 0.2 });
+                    }}
+                  >
+                    <ArrowLeft className="w-4 h-4 group-hover: transition-colors group" />
+                  </div>
+                    Return
+                </Link>
+              </div>
+
+              { /* Case study title */ }
+              <h1 className="text-3xl lg:text-5xl font-bold leading-relaxed">{study.title}</h1>
               
               {/* Quick Read Section */}
               {study.content && (
                 <QuickRead content={study.content} />
               )}
             </div>
-            <div className="text-lg">
+            <div className="text-md">
               <SectionedMarkdown content={study.content} />
             </div>
           </div>
@@ -599,7 +571,7 @@ export default function CaseStudy({
               {prevStudy && (
                 <button
                   onClick={() => handleNavigation(`/case-study/${prevStudy.slug}`, -1)}
-                  className="group flex items-left gap-3 px-4 py-2 mb-8 w-fit border border-stone-300 block uppercase text-xs font-bold hover:text-gray-600 transition-colors group cursor-pointer"
+                  className="flex items-left gap-3 px-4 py-2 mb-8 border border-stone-300 uppercase text-xs font-bold hover:text-gray-600 transition-colors group cursor-pointer"
                 >
                   <div 
                     className="flex items-left gap-2"
@@ -614,7 +586,7 @@ export default function CaseStudy({
                   </div>
                   <div className="flex flex-col items-start">
                     <span className="text-gray-400">Previous</span>
-                    <span className="truncate text-left">{prevStudy.title}</span>
+                    <span className="text-left">{prevStudy.title}</span>
                   </div>
                 </button>
               )}

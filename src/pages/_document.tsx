@@ -5,8 +5,8 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body className="text-gray-900">
-      <div className="fixed inset-0 w-full h-full -z-10" />
+      <body className="anti-aliased text-gray-900">
+      <div className="inset-0 w-full h-full -z-10" />
         <Main />
         <NextScript />
       </body>
