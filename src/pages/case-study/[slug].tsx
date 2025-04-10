@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Components } from 'react-markdown';
 import SEO from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import { ArrowLeft, MoveLeft, MoveRight, Asterisk, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, MoveLeft, MoveRight, Asterisk, Clock } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo, useRef } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
@@ -44,7 +44,6 @@ interface QuickReadProps {
 }
 
 const QuickRead: React.FC<QuickReadProps> = ({ content }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Extract Quick Read section from markdown content
