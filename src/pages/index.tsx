@@ -102,14 +102,14 @@ export default function Home({ caseStudies }: HomeProps) {
             <section id="about" ref={aboutRef} className="p-8 py-32 max-w-4xl mx-auto">
               <span className="mb-4 w-fit block uppercase text-xs font-bold">Hello There</span>
               <div className="text-md">
-                <p className="mb-8 ">
-                I've practiced user-centered design for over 12 years across startups and large corporations, actively exploring emerging technologies to elevate tomorrow's product experiences. Currently, I'm developing enterprise solutions with cutting-edge technology at KPMG.
+                <p className="mb-8">
+                I&apos;ve practiced user-centered design for over 12 years across startups and large corporations, actively exploring emerging technologies to elevate tomorrow&apos;s product experiences. Currently, I&apos;m developing enterprise solutions with cutting-edge technology at KPMG.
                 </p>
-                <p className="mb-8 ">
-                For more than 3 years, I've led and inspired designers to exceed their potential, mentoring them to hone their strengths and celebrating their achievements.
+                <p className="mb-8">
+                For more than 3 years, I&apos;ve led and inspired designers to exceed their potential, mentoring them to hone their strengths and celebrating their achievements.
                 </p>
-                <p className="mb-8 ">
-                As a father of two bright young children, I'm collaborating with my wife to build our family's first AI-centric digital product.
+                <p className="mb-8">
+                As a father of two bright young children, I&apos;m collaborating with my wife to build our family&apos;s first AI-centric digital product.
                 </p>
               </div>
             </section>
