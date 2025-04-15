@@ -1,17 +1,73 @@
 /* eslint-disable react/display-name */
+
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import ReactMarkdown from 'react-markdown';
 import { Components } from 'react-markdown';
 import SEO from '@/components/SEO';
 import { OptimizedImage } from '@/components/OptimizedImage';
-import { ArrowLeft, MoveLeft, MoveRight, Asterisk, Clock } from 'lucide-react';
+import { ArrowLeft, MoveLeft, MoveRight, Asterisk, Clock, Hourglass } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useState, useCallback, useEffect, memo, useRef } from 'react';
 import { CaseStudyPageProps } from '@/types/case-study';
 import { getCaseStudyBySlug, getAdjacentCaseStudies } from '@/lib/case-studies';
 import { ParsedUrlQuery } from 'querystring';
 import gsap from 'gsap';
+
+// Reading time calculation utility
+const calculateReadingTime = (content: string): number => {
+  if (!content) return 1; // Default to 1 minute if no content
+  const wordsPerMinute = 200;
+  const wordCount = content.trim().split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
+};
+
+// Reading time indicator component
+interface ReadingTimeProps {
+  minutes: number;
+}
+
+const ReadingTime: React.FC<ReadingTimeProps> = ({ minutes }) => {
+  return (
+    <div className="flex items-center text-sm text-gray-500 mb-4">
+      <Hourglass className="w-4 h-4 mr-2" />
+      <span>{minutes} min read</span>
+    </div>
+  );
+};
+
+// Reading progress indicator component
+const ReadingProgress: React.FC = () => {
+  const [readingProgress, setReadingProgress] = useState(0);
+  
+  useEffect(() => {
+    const updateReadingProgress = () => {
+      // Calculate scroll position
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      setReadingProgress(progress);
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', updateReadingProgress);
+    
+    // Call once to initialize
+    updateReadingProgress();
+    
+    // Clean up
+    return () => window.removeEventListener('scroll', updateReadingProgress);
+  }, []);
+
+  return (
+    <div className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-50">
+      <div 
+        className="h-1 bg-(--limonana) transition-all duration-100"
+        style={{ width: `${readingProgress}%` }}
+      />
+    </div>
+  );
+};
 
 // Define interfaces for components
 interface SectionedMarkdownProps {
@@ -382,6 +438,9 @@ export default function CaseStudy({
     ? parseInt(router.query.direction, 10) || 0 // Handle NaN case
     : 0;
   
+  // Calculate reading time
+  const readingTimeMinutes = calculateReadingTime(study.content);
+  
   useEffect(() => {
     // Set up router event listeners with proper types
     const handleStart = (url: string): void => {
@@ -518,6 +577,9 @@ export default function CaseStudy({
         article={true}
       />
 
+      {/* Reading Progress Bar */}
+      <ReadingProgress />
+
       <div
         ref={pageContentRef}
         className="min-h-screen"
@@ -552,9 +614,12 @@ export default function CaseStudy({
                 </Link>
               </div>
 
+              {/* Reading Time */}
+              <ReadingTime minutes={readingTimeMinutes} />
+
               { /* Case study title */ }
               <h1 className="text-3xl lg:text-5xl font-bold leading-relaxed">{study.title}</h1>
-              
+                            
               {/* Quick Read Section */}
               {study.content && (
                 <QuickRead content={study.content} />
